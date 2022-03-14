@@ -68,7 +68,7 @@ def upload_file_api():
         out_image=model_out[0]
         out_image = cv2.cvtColor(out_image, cv2.COLOR_BGR2RGB)
         cv2.imwrite(f"out_img\\{os.path.join(filename)}", out_image)
-        domain='https://7e15-41-44-118-135.ngrok.io'
+        domain='https://2133-41-44-118-135.ngrok.io'
         url_out=f"{domain}/image/{os.path.join(filename)}"
         #cv2.destroyAllWindows()
         json_return={
@@ -133,12 +133,13 @@ def test_message(input):
 
 @socketio.on('input image mobile', namespace='/test')
 def test_message(input):
+    print("============")
     f = io.BytesIO()
     f.write(base64.b64decode(input))
     f.seek(0)
     img = detect_img(cv2.rotate(imread(f), cv2.cv2.ROTATE_90_CLOCKWISE))
     f.close()
-    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     _, buffer = cv2.imencode('.jpg', img)
     jpg_as_text = base64.b64encode(buffer)
