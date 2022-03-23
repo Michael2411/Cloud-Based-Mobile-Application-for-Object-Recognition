@@ -3,6 +3,7 @@ import 'image_recognition.dart';
 import 'package:flutter/material.dart';
 import 'image_paint_page.dart';
 import 'globals.dart' as globals;
+import 'sound.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         '/camera':(context)  => MainMenu(),
         '/home':(context) => HomePage(),  
         '/stream':(context)  => MainMenu(),
-        '/draw_image':(context) => ImagePaintPage(),       
+        '/draw_image':(context) => ImageAndSound(),       
       },
     );
   }

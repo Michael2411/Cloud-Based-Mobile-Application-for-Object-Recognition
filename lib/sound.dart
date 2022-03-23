@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'page/image_paint_page.dart';
 import 'dart:convert';
+import 'globals.dart' as globals;
+import 'image_paint_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,29 +18,24 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Home Page'),
+      home: const ImageAndSound(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+class ImageAndSound extends StatefulWidget {
+  const ImageAndSound({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<ImageAndSound> createState() => _ImageAndSoundState();
 }
 
-//The jsondata recieved from the cloud (Should be overwritted by data recieved from the cloud)
-String jsondata = '[{"xmin":133.753036499,"ymin":217.3223419189,"xmax":308.8097229004,"ymax":544.0966186523,"confidence":0.8930187821,"class":16,"name":"dog"},{"xmin":133.753036499,"ymin":217.3223419189,"xmax":308.8097229004,"ymax":544.0966186523,"confidence":0.8930187821,"class":16,"name":"dog"},{"xmin":471.0671691895,"ymin":75.365020752,"xmax":688.200012207,"ymax":172.7693786621,"confidence":0.7528358102,"class":2,"name":"car"},{"xmin":150.212020874,"ymin":117.9598999023,"xmax":568.2462158203,"ymax":426.2601623535,"confidence":0.4828520119,"class":1,"name":"bicycle"}]';
-
-class _MyHomePageState extends State<MyHomePage> {
+class _ImageAndSoundState extends State<ImageAndSound> {
   final FlutterTts flutterTts = FlutterTts();
   String? _newVoiceText;
 
   speak() async{
-      _newVoiceText = jsonDataToString(jsondata);
+      _newVoiceText = jsonDataToString(globals.parsedata);
       if (_newVoiceText != null) {
       if (_newVoiceText!.isNotEmpty) {
         await flutterTts.speak(_newVoiceText!);
@@ -47,8 +43,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  String jsonDataToString(String jsondata){
-    final parsedjson = jsonDecode(jsondata);
+  String jsonDataToString(var jsondata){
+    final parsedjson = jsondata;
 
     //The string to be spoke
     String voiceString = "The image contains ";
@@ -86,9 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('ObjectDetection Audio'),
-        ),
+        body: ImagePaintPage(),
         floatingActionButton: 
               FloatingActionButton(
                 onPressed: () => speak(),
