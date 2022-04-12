@@ -52,7 +52,7 @@ class MyAppstate extends State<MainMenu> {
     //'selected_image' is the image uploaded from the given path 'pickedFile.path'
     var selected_image = File(pickedFile.path);
     var request = http.MultipartRequest(
-        "POST", Uri.parse("https://4730-41-199-249-12.ngrok.io/api/photo"));
+        "POST", Uri.parse("https://ae1f-41-44-118-31.ngrok.io/api/photo"));
 
     var picture = http.MultipartFile(
         'file',
@@ -84,7 +84,7 @@ class MyAppstate extends State<MainMenu> {
     var selected_image = File(pickedFile.path);
 
     var request = http.MultipartRequest(
-        "POST", Uri.parse("https://4730-41-199-249-12.ngrok.io/api/photo"));
+        "POST", Uri.parse("https://ae1f-41-44-118-31.ngrok.io/api/photo"));
     var picture = http.MultipartFile(
         'file',
         File(pickedFile.path).readAsBytes().asStream(),

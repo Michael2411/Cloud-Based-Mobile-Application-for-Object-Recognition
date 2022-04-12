@@ -32,6 +32,14 @@ class CameraApp extends StatefulWidget {
 }
 
 class _CameraAppState extends State<CameraApp> {
+  Future<void> camera_starter() async {
+  HttpOverrides.global = MyHttpOverrides();
+  WidgetsFlutterBinding.ensureInitialized();
+
+  cameras = await availableCameras();
+  runApp(CameraApp());
+  }
+
   late CameraController controller;
   var image = null;
   late List<Plane> image_send;
@@ -44,13 +52,17 @@ class _CameraAppState extends State<CameraApp> {
   @override
   void initState() {
     super.initState();
+    camera_starter();
+    
+
+
     controller = CameraController(cameras[0], ResolutionPreset.low,imageFormatGroup: ImageFormatGroup.jpeg);
 
     controller.initialize().then((_) {
       if (!mounted) {
         return;
       }
-    IO.Socket socket = IO.io('https://d685-41-44-118-135.ngrok.io/test',OptionBuilder().setTransports(['websocket']).build());
+    IO.Socket socket = IO.io('https://ae1f-41-44-118-31.ngrok.io/test',OptionBuilder().setTransports(['websocket']).build());
     //IO.Socket socket = IO.io('https://8d15-41-44-118-135.ngrok.io/test', <String, dynamic> { 'transports':['websocket']});
     //socket.connect();
     //IO.Socket socket = IO.io('https://2133-41-44-118-135.ngrok.io/test',OptionBuilder().setTransports(['polling']).build());
@@ -68,7 +80,12 @@ class _CameraAppState extends State<CameraApp> {
         var imaaaage=base64Encode(image.planes[0].bytes);
         print(counter);
         socket.emit('input image array',imaaaage);
+        var image_show=Image.memory(image.planes[0].bytes);
+        setState(() {
+        image_show_1=image_show;
+        });
         }
+
       });
 
 
@@ -100,8 +117,8 @@ class _CameraAppState extends State<CameraApp> {
         ),  
         body: Center(  
           child: Column(  
-            children: <Widget>[  
-              image_show_1,  
+            children: <Widget>[ 
+              Transform.rotate( angle: 1.57, child:image_show_1 )  
             ],  
           ),  
         ),  

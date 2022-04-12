@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'image_paint_page.dart';
 import 'globals.dart' as globals;
 import 'sound.dart';
+import 'live_stream_video.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       routes:<String, WidgetBuilder>{
         '/camera':(context)  => MainMenu(),
         '/home':(context) => HomePage(),  
-        '/stream':(context)  => MainMenu(),
+        '/stream':(context)  => CameraApp(),
         '/draw_image':(context) => ImageAndSound(),       
       },
     );
