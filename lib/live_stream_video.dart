@@ -63,11 +63,6 @@ class _CameraAppState extends State<CameraApp> {
         return;
       }
     IO.Socket socket = IO.io('https://ae1f-41-44-118-31.ngrok.io/test',OptionBuilder().setTransports(['websocket']).build());
-    //IO.Socket socket = IO.io('https://8d15-41-44-118-135.ngrok.io/test', <String, dynamic> { 'transports':['websocket']});
-    //socket.connect();
-    //IO.Socket socket = IO.io('https://2133-41-44-118-135.ngrok.io/test',OptionBuilder().setTransports(['polling']).build());
-
-    //socket.connect();
     socket.onConnect((_) {
       print('connect!!!!!!!!!!!!!!!!!!!!!!!');
 
@@ -90,11 +85,10 @@ class _CameraAppState extends State<CameraApp> {
 
 
     socket.on('out-image-event-array', (data) {
+      // data : is the array of dictionary of objects from the server to the client
+      //todo:#MM:call the grawing function here
       print(data);
-    //  var image_show=Image.memory(base64Decode(data["image_data"]));
-    //  setState(() {
-    //  image_show_1=image_show;
-    //});
+
     });
 
   
