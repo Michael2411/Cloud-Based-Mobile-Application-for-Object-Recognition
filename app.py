@@ -1,3 +1,4 @@
+from distutils.log import debug
 from sys import stdout
 # from makeup_artist import Makeup_artist
 import logging
@@ -12,6 +13,11 @@ from werkzeug.utils import secure_filename
 import os
 import io
 from yolov5_class import Yolo
+from PIL import Image
+import random
+import json
+import threading
+
 
 #notes
 """
@@ -21,13 +27,15 @@ UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app = Flask(__name__)
 app.logger.addHandler(logging.StreamHandler(stdout))
-app.config['SECRET_KEY'] = 'secret!'
+app.config['SECRET_KEY'] = 'njkbhjvbgkcvgfchgcfcxfff5drtd56e567878ggf6767t6'
 app.config['DEBUG'] = True
-socketio = SocketIO(app,cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*" )
+
 #####################################################################
+#loading the model for one time
 model = Yolo()
 #####################################################################
-
+#model functions interface
 def detect_img(image_cv2):
     results = model.detect(image_cv2, orders=['render'])
     image = results.imgs[0]
@@ -40,11 +48,25 @@ def detect_img_w_array(image_cv2):
 
     return [image,json_to_client]
 #####################################################################
+#help functions
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def cut_image_api(image,array_positions,name):
+    index=0
+    for single_record in array_positions:
+        xmin = int(single_record['xmin'])
+        ymin = int(single_record['ymin'])
+        xmax = int(single_record['xmax'])
+        ymax = int(single_record['ymax'])
+        im1 = image.crop((xmin, ymin, xmax, ymax))
+        final_name=str(name)+str(index)
+        im1.save(f"out_google_search\\{final_name}.jpg")
+        index+=1
+
 #####################################################################
+#cloud functions interface
 @app.route('/', methods=['GET'])
 def index():
     """Video streaming home page."""
@@ -64,16 +86,22 @@ def upload_file_api():
         filename = secure_filename(file.filename)
         image_name=UPLOAD_FOLDER+'\\'+os.path.join(filename)
         file.save(image_name)
-        model_out=detect_img_w_array(imread(image_name))
+        recieved_image=Image.open(image_name)
+        model_out=detect_img_w_array(recieved_image)
         out_image=model_out[0]
         out_image = cv2.cvtColor(out_image, cv2.COLOR_BGR2RGB)
         cv2.imwrite(f"out_img\\{os.path.join(filename)}", out_image)
         domain='https://2133-41-44-118-135.ngrok.io'
         url_out=f"{domain}/image/{os.path.join(filename)}"
         #cv2.destroyAllWindows()
+        #for google search api
+        name = str(random.randint(0,1000000))
+        x = threading.Thread(target=cut_image_api, args=(recieved_image,json.loads(model_out[1]),name))
+        x.start()
         json_return={
             'image_array':model_out[1],
-            'image_out':url_out
+            'image_out':url_out,
+            'google_api_name':name
         }
         return jsonify(json_return)
 
@@ -153,6 +181,7 @@ def test_message(input):
 def test_message_2(input):
     f = io.BytesIO()
     f.write(base64.b64decode(input))
+    print("hiiiiiii")
     f.seek(0)
     model_out=detect_img_w_array(imread(f))
     f.close()
@@ -190,9 +219,20 @@ def test_connect():
 def test_message(input):
     print(input)
 
+#####################################################################
+#access images that have been saved on cloud
 @app.route("/image/<path:filename>", methods=['GET'])
-def show_img(filename):
+def show_img1(filename):
     return send_file(f"out_img\\{filename}")
+
+# url to search with photo to google api
+"""
+on the client side just call that url and it will redirect you to google search with the opject you have selected
+https://www.google.com/searchbyimage?site=search&sa=X&image_url={domain}/image_search/{name}{index}.jpg
+"""
+@app.route("/image_search/<path:filename>", methods=['GET'])
+def show_img2(filename):
+    return send_file(f"out_google_search\\{filename}")
 
 if __name__ == '__main__':
     socketio.run(app, port=5000)
