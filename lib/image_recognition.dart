@@ -51,8 +51,8 @@ class MyAppstate extends State<MainMenu> {
     if (pickedFile == null) return;
     //'selected_image' is the image uploaded from the given path 'pickedFile.path'
     var selected_image = File(pickedFile.path);
-    var request = http.MultipartRequest(
-        "POST", Uri.parse("https://ae1f-41-44-118-31.ngrok.io/api/photo"));
+    var request =
+        http.MultipartRequest("POST", Uri.parse("${globals.domain}/api/photo"));
 
     var picture = http.MultipartFile(
         'file',
@@ -70,10 +70,11 @@ class MyAppstate extends State<MainMenu> {
         await http.Response.fromStream(await request.send());
     final parsed = json.decode(response.body);
     final parsedJSON = (jsonDecode(parsed['image_array']));
+    globals.temp_id = parsed['google_api_name'];
     globals.parsedata = parsedJSON;
     print(parsedJSON);
 
-    Navigator.pushNamed(context,'/draw_image');
+    Navigator.pushNamed(context, '/draw_image');
   }
 
   uploadImage_camera(String title) async {
@@ -83,8 +84,8 @@ class MyAppstate extends State<MainMenu> {
     if (pickedFile == null) return;
     var selected_image = File(pickedFile.path);
 
-    var request = http.MultipartRequest(
-        "POST", Uri.parse("https://ae1f-41-44-118-31.ngrok.io/api/photo"));
+    var request =
+        http.MultipartRequest("POST", Uri.parse("${globals.domain}/api/photo"));
     var picture = http.MultipartFile(
         'file',
         File(pickedFile.path).readAsBytes().asStream(),
@@ -95,10 +96,10 @@ class MyAppstate extends State<MainMenu> {
     request.files.add(picture);
     http.StreamedResponse ttr = await request.send();
     http.Response response = await http.Response.fromStream(ttr);
-
     final parsed = json.decode(response.body);
     final parsedJSON = (jsonDecode(parsed['image_array']));
-
+    globals.temp_id = parsed['google_api_name'];
+    globals.parsedata = parsedJSON;
     final bytes = await selected_image.readAsBytes();
     final image = await decodeImageFromList(bytes);
 
@@ -107,7 +108,7 @@ class MyAppstate extends State<MainMenu> {
     globals.parsedata = parsedJSON;
     print(parsedJSON);
 
-    Navigator.pushNamed(context,'/draw_image');
+    Navigator.pushNamed(context, '/draw_image');
   }
 
   @override
@@ -145,15 +146,15 @@ class MyAppstate extends State<MainMenu> {
                 onPressed: () {
                   uploadImage_camera(
                     'image',
-                  );                  
+                  );
                 },
                 child: Text('from camera'),
               ),
-              ElevatedButton(onPressed:(){
-                Navigator.pushNamed(context,'/stream');               
-                },
-                  child: const Text('Live Stream')),  
-                                    
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/stream');
+                  },
+                  child: const Text('Live Stream')),
             ],
           ),
         ),
