@@ -6,6 +6,8 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:socket_io_client/socket_io_client.dart';
 import 'dart:io';
 import 'package:image/image.dart' as imoo;
+import 'globals.dart' as globals;
+
 
 
 
@@ -40,6 +42,7 @@ class _CameraAppState extends State<CameraApp> {
   runApp(CameraApp());
   }
 
+  late CameraImage cameraImage;
   late CameraController controller;
   var image = null;
   late List<Plane> image_send;
@@ -53,40 +56,51 @@ class _CameraAppState extends State<CameraApp> {
   void initState() {
     super.initState();
     camera_starter();
-    
+    loadCamera();
+  }
 
-
+  loadCamera() {
     controller = CameraController(cameras[0], ResolutionPreset.low,imageFormatGroup: ImageFormatGroup.jpeg);
 
     controller.initialize().then((_) {
-      if (!mounted) {
-        return;
-      }
-    IO.Socket socket = IO.io('https://ae1f-41-44-118-31.ngrok.io/test',OptionBuilder().setTransports(['websocket']).build());
+      IO.Socket socket = IO.io('${globals.domain}/test',OptionBuilder().setTransports(['websocket']).build());
     socket.onConnect((_) {
       print('connect!!!!!!!!!!!!!!!!!!!!!!!');
 
     });
-          int counter=0;
-      controller.startImageStream((image) {
-      counter=counter+1;
-      if (counter%30==0){
-        print("Image size: ${image.width}x${image.height}");
-        var imaaaage=base64Encode(image.planes[0].bytes);
-        print(counter);
-        socket.emit('input image array',imaaaage);
-        var image_show=Image.memory(image.planes[0].bytes);
+      
+      if (!mounted) {
+        return;
+      }
+    
+      else{
         setState(() {
-        image_show_1=image_show;
-        });
-        }
+          int counter=0;
 
-      });
+          controller.startImageStream((image) {
+            cameraImage = image;
+            counter=counter+1;
+            if (counter%30==0){
+              print("Image size: ${image.width}x${image.height}");
+              var imaaaage=base64Encode(image.planes[0].bytes);
+              print(counter);
+              socket.emit('input image array',imaaaage);
+              var image_show=Image.memory(image.planes[0].bytes);
+              // setState(() {
+              // image_show_1=image_show;
+              // });
+            }
+
+          });
+        });
+        
+      }
+      
 
 
     socket.on('out-image-event-array', (data) {
-      // data : is the array of dictionary of objects from the server to the client
-      //todo:#MM:call the grawing function here
+      // data : is the array of dictionary of objects from the server to the client to be used to label each frame
+      // todo : #MM: call the drawing function here
       print(data);
 
     });
@@ -109,14 +123,11 @@ class _CameraAppState extends State<CameraApp> {
         appBar: AppBar(  
             title: Text('Flutter Image Demo'),  
         ),  
-        body: Center(  
-          child: Column(  
-            children: <Widget>[ 
-              Transform.rotate( angle: 1.57, child:image_show_1 )  
-            ],  
+        body: Center(
+          // camera stream is displayed here
+          child: CameraPreview(controller)    
           ),  
         ),  
-      ),  
     );  
   }  
 }
