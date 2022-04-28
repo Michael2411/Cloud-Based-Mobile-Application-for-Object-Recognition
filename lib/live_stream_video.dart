@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:socket_io_client/socket_io_client.dart';
 import 'dart:io';
 import 'package:image/image.dart' as imoo;
-import 'image_paint_page.dart';
+import 'sound.dart';
 import 'globals.dart' as globals;
 
 late List<CameraDescription> cameras;
@@ -39,7 +40,6 @@ class _CameraAppState extends State<CameraApp> {
     WidgetsFlutterBinding.ensureInitialized();
 
     cameras = await availableCameras();
-
     runApp(CameraApp());
   }
 
@@ -77,12 +77,17 @@ class _CameraAppState extends State<CameraApp> {
         setState(() {
           int counter = 0;
 
-          controller.startImageStream((image) {
+          controller.startImageStream((image) async {
             cameraImage = image;
             counter = counter + 1;
             if (counter % 30 == 0) {
               print("Image size: ${image.width}x${image.height}");
               var imaaaage = base64Encode(image.planes[0].bytes);
+
+              final decoded_image =
+                  await decodeImageFromList(image.planes[0].bytes);
+              globals.image_data = decoded_image;
+
               print(counter);
               socket.emit('input image array', imaaaage);
               var image_show = Image.memory(image.planes[0].bytes);
@@ -113,7 +118,9 @@ class _CameraAppState extends State<CameraApp> {
         ),
         body: Center(
           // camera stream is displayed here
-          child: ImagePaintPage(child: CameraPreview(controller)),
+          child: Stack(
+            children: [CameraPreview(controller)],
+          ),
         ),
       ),
     );

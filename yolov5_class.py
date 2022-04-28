@@ -2,7 +2,7 @@ import cv2
 import torch
 import time
 class Yolo():
-    def __init__(self, model_name='yolov5s'):
+    def __init__(self, model_name='yolov5m'):
         self.model = torch.hub.load('ultralytics/yolov5', model_name)
         self.results = None
 
@@ -33,8 +33,9 @@ class Yolo():
         cv2.destroyAllWindows()
         return True
     
-    def detect(self, imgs, orders=['render', 'save', 'show'], img_size=640):
-        self.results = self.model(imgs, size=img_size)  # includes NMS
+    def detect(self, imgs, orders=['render', 'save', 'show']):
+        # self.results = self.model(imgs, size=img_size)
+        self.results = self.model(imgs)  # includes NMS
         # Results
         # self.results.render()
         for order in orders:

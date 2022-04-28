@@ -85,9 +85,9 @@ class RectanglePainter extends CustomPainter {
     parsedata = globals.parsedata;
     print(globals.parsedata);
     final _random = Random();
-    final widthRatio =
+    const widthRatio =
         1 /*(size.width*2 Variable for the width of the image sent to cloud*/;
-    final heightRatio =
+    const heightRatio =
         1 /*/(size.height*2 Variable for the height of the image sent to cloud*/;
     double fontSize = 30;
 

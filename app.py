@@ -91,7 +91,7 @@ def upload_file_api():
         out_image=model_out[0]
         out_image = cv2.cvtColor(out_image, cv2.COLOR_BGR2RGB)
         cv2.imwrite(f"out_img\\{os.path.join(filename)}", out_image)
-        domain='http://bd0b-197-120-79-34.ngrok.io'
+        domain='http://0694-197-120-79-34.ngrok.io'
         url_out=f"{domain}/image/{os.path.join(filename)}"
         #cv2.destroyAllWindows()
         #for google search api

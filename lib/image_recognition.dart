@@ -47,7 +47,7 @@ class MyAppstate extends State<MainMenu> {
   String image_url =
       "https://outofschool.club/wp-content/uploads/2015/02/insert-image-here.jpg";
   //percentage of quality needed
-  var quality = 50;
+  var quality = 1;
 
   //method to compress the images
   Future<File> compressImage(String path, int quality) async {
@@ -62,17 +62,25 @@ class MyAppstate extends State<MainMenu> {
   uploadImage(String title) async {
     final picker = ImagePicker();
     final pickedFile = await picker.getImage(
-        source: ImageSource.gallery,
-        maxHeight: 500,
-        maxWidth: 500,
-        imageQuality: 50);
+      source: ImageSource.gallery,
+      maxHeight: 500,
+      maxWidth: 500,
+    );
     if (pickedFile == null) return;
 
     //'selected_image' is the image uploaded from the given path 'pickedFile.path'
     var selected_image = File(pickedFile.path);
 
+    // int sizeInBytes = selected_image.lengthSync();
+    // double sizeInMb = sizeInBytes / (1024 * 1024);
+    // print('original size = ${sizeInMb}');
+
     //the compressed image
-    var compressedFile = await compressImage(pickedFile.path, quality);
+    var compressedFile = await compressImage(pickedFile.path, 50);
+
+    // sizeInBytes = File(compressedFile.path).lengthSync();
+    // sizeInMb = sizeInBytes / (1024 * 1024);
+    // print('compressed size = ${sizeInMb}');
 
     var request =
         http.MultipartRequest("POST", Uri.parse("${globals.domain}/api/photo"));
@@ -104,17 +112,20 @@ class MyAppstate extends State<MainMenu> {
 
   uploadImage_camera(String title) async {
     final picker = ImagePicker();
-    final pickedFile =
-        await picker.getImage(source: ImageSource.camera, imageQuality: 50);
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
 
     if (pickedFile == null) return;
+
+    //'selected_image' is the image uploaded from the given path 'pickedFile.path'
     var selected_image = File(pickedFile.path);
 
     //the compressed image
-    var compressedFile = await compressImage(pickedFile.path, quality);
+    var compressedFile = await compressImage(pickedFile.path, 50);
 
     var request =
         http.MultipartRequest("POST", Uri.parse("${globals.domain}/api/photo"));
+
+    // the var sent by the api that contains the image
     var picture = http.MultipartFile(
         'file',
         File(compressedFile.path).readAsBytes().asStream(),
