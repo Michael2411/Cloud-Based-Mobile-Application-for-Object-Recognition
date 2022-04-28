@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:camera/camera.dart';
@@ -43,27 +46,49 @@ class MyAppstate extends State<MainMenu> {
   late CameraController controller;
   String image_url =
       "https://outofschool.club/wp-content/uploads/2015/02/insert-image-here.jpg";
+  //percentage of quality needed
+  var quality = 50;
 
+  //method to compress the images
+  Future<File> compressImage(String path, int quality) async {
+    final newPath = p.join((await getTemporaryDirectory()).path,
+        '${DateTime.now()}.${p.extension(path)}');
+    final result = await FlutterImageCompress.compressAndGetFile(path, newPath,
+        quality: quality);
+    return result!;
+  }
+
+  //method to upload image from gallary
   uploadImage(String title) async {
     final picker = ImagePicker();
     final pickedFile = await picker.getImage(
-        source: ImageSource.gallery, maxHeight: 500, maxWidth: 500);
+        source: ImageSource.gallery,
+        maxHeight: 500,
+        maxWidth: 500,
+        imageQuality: 50);
     if (pickedFile == null) return;
+
     //'selected_image' is the image uploaded from the given path 'pickedFile.path'
     var selected_image = File(pickedFile.path);
+
+    //the compressed image
+    var compressedFile = await compressImage(pickedFile.path, quality);
+
     var request =
         http.MultipartRequest("POST", Uri.parse("${globals.domain}/api/photo"));
 
+    // the var sent by the api that contains the image
     var picture = http.MultipartFile(
         'file',
-        File(pickedFile.path).readAsBytes().asStream(),
-        File(pickedFile.path).lengthSync(),
+        File(compressedFile.path).readAsBytes().asStream(),
+        File(compressedFile.path).lengthSync(),
         filename: pickedFile.path.split("/").last);
 
     final bytes = await selected_image.readAsBytes();
     final image = await decodeImageFromList(bytes);
 
     globals.image_data = image;
+
     request.files.add(picture);
 
     http.Response response =
@@ -79,17 +104,21 @@ class MyAppstate extends State<MainMenu> {
 
   uploadImage_camera(String title) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    final pickedFile =
+        await picker.getImage(source: ImageSource.camera, imageQuality: 50);
 
     if (pickedFile == null) return;
     var selected_image = File(pickedFile.path);
+
+    //the compressed image
+    var compressedFile = await compressImage(pickedFile.path, quality);
 
     var request =
         http.MultipartRequest("POST", Uri.parse("${globals.domain}/api/photo"));
     var picture = http.MultipartFile(
         'file',
-        File(pickedFile.path).readAsBytes().asStream(),
-        File(pickedFile.path).lengthSync(),
+        File(compressedFile.path).readAsBytes().asStream(),
+        File(compressedFile.path).lengthSync(),
         filename: pickedFile.path.split("/").last);
 
     //request.files.add(picture);

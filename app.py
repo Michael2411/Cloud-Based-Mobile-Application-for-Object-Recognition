@@ -37,12 +37,12 @@ model = Yolo()
 #####################################################################
 #model functions interface
 def detect_img(image_cv2):
-    results = model.detect(image_cv2, orders=['render'])
+    results = model.detect(image_cv2, orders=[])
     image = results.imgs[0]
     return image
 
 def detect_img_w_array(image_cv2):
-    results = model.detect(image_cv2, orders=['render'])
+    results = model.detect(image_cv2, orders=[])
     image = results.imgs[0]
     json_to_client = model.get_json()
 
@@ -91,7 +91,7 @@ def upload_file_api():
         out_image=model_out[0]
         out_image = cv2.cvtColor(out_image, cv2.COLOR_BGR2RGB)
         cv2.imwrite(f"out_img\\{os.path.join(filename)}", out_image)
-        domain='https://2133-41-44-118-135.ngrok.io'
+        domain='http://bd0b-197-120-79-34.ngrok.io'
         url_out=f"{domain}/image/{os.path.join(filename)}"
         #cv2.destroyAllWindows()
         #for google search api

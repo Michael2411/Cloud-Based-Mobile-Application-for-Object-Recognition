@@ -6,17 +6,17 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:socket_io_client/socket_io_client.dart';
 import 'dart:io';
 import 'package:image/image.dart' as imoo;
+import 'image_paint_page.dart';
 import 'globals.dart' as globals;
 
-
-
-
 late List<CameraDescription> cameras;
- class MyHttpOverrides extends HttpOverrides{
+
+class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext? context){
+  HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
 
@@ -35,11 +35,12 @@ class CameraApp extends StatefulWidget {
 
 class _CameraAppState extends State<CameraApp> {
   Future<void> camera_starter() async {
-  HttpOverrides.global = MyHttpOverrides();
-  WidgetsFlutterBinding.ensureInitialized();
+    HttpOverrides.global = MyHttpOverrides();
+    WidgetsFlutterBinding.ensureInitialized();
 
-  cameras = await availableCameras();
-  runApp(CameraApp());
+    cameras = await availableCameras();
+
+    runApp(CameraApp());
   }
 
   late CameraImage cameraImage;
@@ -49,8 +50,8 @@ class _CameraAppState extends State<CameraApp> {
   late int test = 70;
 
   get jpeg => null;
-  var image_show_1=Image.network("https://outofschool.club/wp-content/uploads/2015/02/insert-image-here.jpg");
-
+  var image_show_1 = Image.network(
+      "https://outofschool.club/wp-content/uploads/2015/02/insert-image-here.jpg");
 
   @override
   void initState() {
@@ -60,74 +61,61 @@ class _CameraAppState extends State<CameraApp> {
   }
 
   loadCamera() {
-    controller = CameraController(cameras[0], ResolutionPreset.low,imageFormatGroup: ImageFormatGroup.jpeg);
+    controller = CameraController(cameras[0], ResolutionPreset.low,
+        imageFormatGroup: ImageFormatGroup.jpeg);
 
     controller.initialize().then((_) {
-      IO.Socket socket = IO.io('${globals.domain}/test',OptionBuilder().setTransports(['websocket']).build());
-    socket.onConnect((_) {
-      print('connect!!!!!!!!!!!!!!!!!!!!!!!');
+      IO.Socket socket = IO.io('${globals.domain}/test',
+          OptionBuilder().setTransports(['websocket']).build());
+      socket.onConnect((_) {
+        print('connect!!!!!!!!!!!!!!!!!!!!!!!');
+      });
 
-    });
-      
       if (!mounted) {
         return;
-      }
-    
-      else{
+      } else {
         setState(() {
-          int counter=0;
+          int counter = 0;
 
           controller.startImageStream((image) {
             cameraImage = image;
-            counter=counter+1;
-            if (counter%30==0){
+            counter = counter + 1;
+            if (counter % 30 == 0) {
               print("Image size: ${image.width}x${image.height}");
-              var imaaaage=base64Encode(image.planes[0].bytes);
+              var imaaaage = base64Encode(image.planes[0].bytes);
               print(counter);
-              socket.emit('input image array',imaaaage);
-              var image_show=Image.memory(image.planes[0].bytes);
+              socket.emit('input image array', imaaaage);
+              var image_show = Image.memory(image.planes[0].bytes);
               // setState(() {
               // image_show_1=image_show;
               // });
             }
-
           });
         });
-        
       }
-      
 
+      socket.on('out-image-event-array', (data) {
+        // data : is the array of dictionary of objects from the server to the client to be used to label each frame
+        // todo : #MM: call the drawing function here
+        globals.parsedata = data;
+        print(data);
+      });
 
-    socket.on('out-image-event-array', (data) {
-      // data : is the array of dictionary of objects from the server to the client to be used to label each frame
-      // todo : #MM: call the drawing function here
-      print(data);
-
-    });
-
-  
-
-    socket.onDisconnect((_) => print('disconnect'));
-
-    
-
-
+      socket.onDisconnect((_) => print('disconnect'));
     });
   }
 
-
-
-  Widget build(BuildContext context) {  
-    return MaterialApp(  
-      home: Scaffold(  
-        appBar: AppBar(  
-            title: Text('Flutter Image Demo'),  
-        ),  
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Flutter Image Demo'),
+        ),
         body: Center(
           // camera stream is displayed here
-          child: CameraPreview(controller)    
-          ),  
-        ),  
-    );  
-  }  
+          child: ImagePaintPage(child: CameraPreview(controller)),
+        ),
+      ),
+    );
+  }
 }
