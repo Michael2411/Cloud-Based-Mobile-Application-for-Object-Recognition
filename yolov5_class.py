@@ -1,9 +1,11 @@
 import cv2
 import torch
 import time
+import warnings
+warnings.filterwarnings("ignore", message="torch.distributed.reduce_op is deprecated")
 class Yolo():
     def __init__(self, model_name='yolov5m'):
-        self.model = torch.hub.load('ultralytics/yolov5', model_name)
+        self.model = torch.hub.load('ultralytics/yolov5', model_name,  _verbose=False)
         self.results = None
 
     def get_results(self):

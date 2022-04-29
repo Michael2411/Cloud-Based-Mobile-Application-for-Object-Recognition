@@ -63,8 +63,7 @@ class MyAppstate extends State<MainMenu> {
     final picker = ImagePicker();
     final pickedFile = await picker.getImage(
       source: ImageSource.gallery,
-      maxHeight: 500,
-      maxWidth: 500,
+      maxWidth: 1920,
     );
     if (pickedFile == null) return;
 
@@ -119,8 +118,16 @@ class MyAppstate extends State<MainMenu> {
     //'selected_image' is the image uploaded from the given path 'pickedFile.path'
     var selected_image = File(pickedFile.path);
 
+    // int sizeInBytes = selected_image.lengthSync();
+    // double sizeInMb = sizeInBytes / (1024 * 1024);
+    // print('original size = ${sizeInMb}');
+
     //the compressed image
     var compressedFile = await compressImage(pickedFile.path, 50);
+
+    // sizeInBytes = File(compressedFile.path).lengthSync();
+    // sizeInMb = sizeInBytes / (1024 * 1024);
+    // print('compressed size = ${sizeInMb}');
 
     var request =
         http.MultipartRequest("POST", Uri.parse("${globals.domain}/api/photo"));
