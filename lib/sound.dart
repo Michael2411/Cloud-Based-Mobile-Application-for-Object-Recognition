@@ -111,8 +111,10 @@ class _ImageAndSoundState extends State<ImageAndSound> {
     double temp;
     int index = 0;
     for (int i = 0; i < objects.length; i++) {
-      temp = ((x - objects[i]["xmin"]) * (x - objects[i]["xmin"])) +
-          ((y - objects[i]["ymin"]) * (y - objects[i]["ymin"]));
+      temp = ((x - ((objects[i]["xmin"] + objects[i]["xmax"])) / 2) *
+              (x - ((objects[i]["xmin"] + objects[i]["xmax"])) / 2)) +
+          ((y - ((objects[i]["ymin"] + objects[i]["ymax"])) / 2) *
+              (y - ((objects[i]["ymin"] + objects[i]["ymax"])) / 2));
       if (temp < distance) {
         distance = temp;
         index = i;
