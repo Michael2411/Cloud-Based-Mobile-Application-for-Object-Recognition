@@ -5,11 +5,10 @@ import 'package:flutter/cupertino.dart';
 import '../UIassets/constants.dart';
 
 class BACKGROUND extends StatelessWidget {
-  final Widget child;
   final double width, height;
 
   const BACKGROUND(
-      { required this.child, required this.width, required this.height}) ;
+      { required this.width, required this.height}) ;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +21,6 @@ class BACKGROUND extends StatelessWidget {
                 fit:BoxFit.cover,
         ),
         ),
-        child: Center(child: child));
+       );
   }
 }

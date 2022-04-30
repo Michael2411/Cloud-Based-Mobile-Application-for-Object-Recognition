@@ -173,70 +173,35 @@ class MyAppstate extends State<MainMenu> {
           backgroundColor: DARK_BLUE,
           centerTitle: true,
         ),
-        body: BACKGROUND(
-          height: size.height,
-          width: size.width,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.network(image_url, height: 400,
-                        loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child;
-                      } else {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    }),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(25),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        uploadImage(
-                          'image',
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        textStyle:const TextStyle(
-                          color: WHITE,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),),
-                      child: Text('Upload'),
+        body: Stack(
+          children:[ BACKGROUND(
+            height: size.height,
+            width: size.width,
+        ),Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.network(image_url, height: 400,
+                          loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      }),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(25),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        uploadImage_camera(
-                          'image',
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        textStyle:const TextStyle(
-                          color: WHITE,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),),
-                      child: Text('from camera'),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(25),
-                    child: ElevatedButton(
+                    Padding(
+                      padding: const EdgeInsets.all(25),
+                      child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/stream');
+                          uploadImage(
+                            'image',
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           textStyle:const TextStyle(
@@ -246,12 +211,49 @@ class MyAppstate extends State<MainMenu> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),),
-                        child: const Text('Live Stream')),
-                  ),
-                ],
+                        child: Text('Upload'),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(25),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          uploadImage_camera(
+                            'image',
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          textStyle:const TextStyle(
+                            color: WHITE,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),),
+                        child: Text('from camera'),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(25),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/stream');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            textStyle:const TextStyle(
+                              color: WHITE,
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),),
+                          child: const Text('Live Stream')),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
+        ]
         ),
       ),
     );

@@ -49,36 +49,39 @@ class HomePage extends StatelessWidget{
     return  MaterialApp(
       theme: ThemeData.dark(),
       home: Scaffold(
+        resizeToAvoidBottomInset: false,
           appBar:AppBar(title: const Text('Graduation Project',style: TextStyle(color:DARK_RED,fontSize: 40,
                                     fontWeight:FontWeight.bold,fontStyle: FontStyle.italic),),
             backgroundColor: DARK_BLUE,
             centerTitle: true,),
-          body:BACKGROUND(
-            height: size.height,
-            width: size.width,
-            child: Center(
-                child:Column(
-                    children:[
-                           Padding(
-                             padding: const EdgeInsets.all(300),
-                             child: ElevatedButton(onPressed:(){
-                              Navigator.pushNamed(context,'/camera');
-                              },
-                                style: ElevatedButton.styleFrom(
-                                    textStyle:const TextStyle(
-                                        color: WHITE,
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,),
+          body:Stack(
+            children:[ BACKGROUND(
+              height: size.height,
+              width: size.width,
+              ),
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.all(50),
+                  child: Column(
+                    children:[ ElevatedButton(onPressed:(){
+                      Navigator.pushNamed(context,'/camera');
+                    },
+                        style: ElevatedButton.styleFrom(
+                          textStyle:const TextStyle(
+                            color: WHITE,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,),
 
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                ),
-                                child: const Text('Main Menu')),
-                           ),
-                    ],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
+                        child: const Text('Main Menu')),
+                ]
+                  ),
                 ),
-            ),
+              ),
+          ]
           ),
       )
     );
