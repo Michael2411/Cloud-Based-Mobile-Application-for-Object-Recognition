@@ -27,9 +27,9 @@ class RectanglePainter1 extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     //------------------------------------------
     parsedata = globals.parsedata;
-    final widthRatio =1.5 ;
-    final heightRatio =1.5 ;
-    double fontSize = 0.05*size.width;
+    final widthRatio = 1.5;
+    final heightRatio = 1.5;
+    double fontSize = 0.05 * size.width;
     for (var dict in parsedata) {
       final a = Offset(dict['xmin'] * widthRatio, dict['ymin'] * heightRatio);
       final b = Offset(dict['xmax'] * widthRatio, dict['ymax'] * heightRatio);
@@ -43,7 +43,26 @@ class RectanglePainter1 extends CustomPainter {
         ..style = PaintingStyle.stroke;
       canvas.drawRect(rect, paint);
       //------------------------------------------
+      //Add name of the predicted object over it's square in the image
+      TextSpan span = new TextSpan(
+          style: new TextStyle(
+              color: Color.fromARGB(255, 255, 255, 255),
+              fontSize: fontSize,
+              backgroundColor: predectionColor,
+              fontFamily: 'Roboto'),
+          text: " " + dict['name'] + " ");
 
+      TextPainter tp = new TextPainter(
+          text: span,
+          textDirection: TextDirection.ltr,
+          textAlign: TextAlign.center);
+
+      tp.layout();
+      tp.paint(
+          canvas,
+          new Offset(dict['xmin'] * widthRatio,
+              dict['ymin'] * heightRatio - fontSize - 5));
+      //------------------------------------------
     }
   }
 
