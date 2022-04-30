@@ -1,11 +1,13 @@
 import 'dart:io';
+import 'package:graduation_app/customs/background.dart';
+
 import 'image_recognition.dart';
 import 'package:flutter/material.dart';
 import 'image_paint_page.dart';
 import 'globals.dart' as globals;
 import 'sound.dart';
 import 'live_stream_video.dart';
-
+import 'UIassets/constants.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -43,18 +45,40 @@ class HomePage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
+    final Size size= MediaQuery.of(context).size;
     return  MaterialApp(
+      theme: ThemeData.dark(),
       home: Scaffold(
-          appBar:AppBar(title: const Text('Graduation Project'),),
-          body:Center(
-              child:Column(
-                  children:[
-                    ElevatedButton(onPressed:(){
-                      Navigator.pushNamed(context,'/camera');
-                      },
-                        child: const Text('Main Menu')),
-                  ],
-              ),
+          appBar:AppBar(title: const Text('Graduation Project',style: TextStyle(color:DARK_RED,fontSize: 40,
+                                    fontWeight:FontWeight.bold,fontStyle: FontStyle.italic),),
+            backgroundColor: DARK_BLUE,
+            centerTitle: true,),
+          body:BACKGROUND(
+            height: size.height,
+            width: size.width,
+            child: Center(
+                child:Column(
+                    children:[
+                           Padding(
+                             padding: const EdgeInsets.all(300),
+                             child: ElevatedButton(onPressed:(){
+                              Navigator.pushNamed(context,'/camera');
+                              },
+                                style: ElevatedButton.styleFrom(
+                                    textStyle:const TextStyle(
+                                        color: WHITE,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,),
+
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                ),
+                                child: const Text('Main Menu')),
+                           ),
+                    ],
+                ),
+            ),
           ),
       )
     );

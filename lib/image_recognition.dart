@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:graduation_app/UIassets/constants.dart';
+import 'package:graduation_app/customs/background.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path/path.dart' as p;
@@ -160,49 +162,95 @@ class MyAppstate extends State<MainMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size= MediaQuery.of(context).size;
+
     return MaterialApp(
+      theme: ThemeData.dark(),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Image Upload'),
+          title: const Text('Image Upload',style: TextStyle(color:DARK_RED,fontSize: 40,
+              fontWeight:FontWeight.bold,fontStyle: FontStyle.italic),),
+          backgroundColor: DARK_BLUE,
+          centerTitle: true,
         ),
-        body: Center(
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.network(image_url, height: 400,
-                    loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child;
-                  } else {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                }),
+        body: BACKGROUND(
+          height: size.height,
+          width: size.width,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(image_url, height: 400,
+                        loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    }),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(25),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        uploadImage(
+                          'image',
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        textStyle:const TextStyle(
+                          color: WHITE,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),),
+                      child: Text('Upload'),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(25),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        uploadImage_camera(
+                          'image',
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        textStyle:const TextStyle(
+                          color: WHITE,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),),
+                      child: Text('from camera'),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(25),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/stream');
+                        },
+                        style: ElevatedButton.styleFrom(
+                          textStyle:const TextStyle(
+                            color: WHITE,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),),
+                        child: const Text('Live Stream')),
+                  ),
+                ],
               ),
-              ElevatedButton(
-                onPressed: () {
-                  uploadImage(
-                    'image',
-                  );
-                },
-                child: Text('Upload'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  uploadImage_camera(
-                    'image',
-                  );
-                },
-                child: Text('from camera'),
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/stream');
-                  },
-                  child: const Text('Live Stream')),
-            ],
+            ),
           ),
         ),
       ),
