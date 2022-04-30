@@ -184,7 +184,7 @@ class MyAppstate extends State<MainMenu> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(image_url, height: 400,
+                      child: Image.network(image_url, height: 0,
                           loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) {
                           return child;
