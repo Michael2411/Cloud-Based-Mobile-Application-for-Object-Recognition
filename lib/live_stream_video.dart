@@ -21,6 +21,36 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
+class RectanglePainter1 extends CustomPainter {
+  var parsedata;
+  @override
+  void paint(Canvas canvas, Size size) {
+    //------------------------------------------
+    parsedata = globals.parsedata;
+    final widthRatio =1.5 ;
+    final heightRatio =1.5 ;
+    double fontSize = 0.05*size.width;
+    for (var dict in parsedata) {
+      final a = Offset(dict['xmin'] * widthRatio, dict['ymin'] * heightRatio);
+      final b = Offset(dict['xmax'] * widthRatio, dict['ymax'] * heightRatio);
+      //drawing rectangle with point a and b
+      final rect = Rect.fromPoints(a, b);
+      Color predectionColor = Color.fromARGB(255, 200, 200, 200);
+
+      final paint = Paint()
+        ..color = predectionColor
+        ..strokeWidth = 0.003 * (size.width + size.height)
+        ..style = PaintingStyle.stroke;
+      canvas.drawRect(rect, paint);
+      //------------------------------------------
+
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
+}
+
 Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
