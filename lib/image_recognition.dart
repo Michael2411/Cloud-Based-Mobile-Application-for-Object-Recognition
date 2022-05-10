@@ -117,7 +117,7 @@ class MyAppstate extends State<MainMenu> {
 
   uploadImage_camera(String title) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    final pickedFile = await picker.getImage(source: ImageSource.camera,maxWidth: 1920);
 
     if (pickedFile == null) return;
 
