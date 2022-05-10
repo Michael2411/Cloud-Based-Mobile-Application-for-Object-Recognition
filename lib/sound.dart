@@ -101,7 +101,7 @@ class _ImageAndSoundState extends State<ImageAndSound> {
     Random random = new Random();
     int randomNumber = random.nextInt(10000); 
     String url =
-        "https://www.google.com/searchbyimage?site=search&sa=X&image_url=${globals.domain}/image_search/${globals.temp_id}${index}.jpg&rand=${randomNumber}";
+        "https://www.google.com/searchbyimage?site=search&sa=X&image_url=${globals.domain}/image_search/${globals.temp_id}${index}.jpg?rand=${randomNumber}";
     print(url);
     launchURL(url);
   }
