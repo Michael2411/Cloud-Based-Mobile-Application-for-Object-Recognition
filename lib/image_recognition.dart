@@ -19,6 +19,7 @@ import 'main.dart';
 import 'image_paint_page.dart';
 import 'globals.dart' as globals;
 import 'dart:ui' as ui;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -85,6 +86,7 @@ class MyAppstate extends State<MainMenu> {
 
     var request =
         http.MultipartRequest("POST", Uri.parse("${globals.domain}/api/photo"));
+    request.fields['client_id'] =globals.temp_id ;
 
     // the var sent by the api that contains the image
     var picture = http.MultipartFile(
@@ -97,14 +99,16 @@ class MyAppstate extends State<MainMenu> {
     final image = await decodeImageFromList(bytes);
 
     globals.image_data = image;
+    
 
     request.files.add(picture);
+    
 
     http.Response response =
         await http.Response.fromStream(await request.send());
     final parsed = json.decode(response.body);
     final parsedJSON = (jsonDecode(parsed['image_array']));
-    globals.temp_id = parsed['google_api_name'];
+    //globals.temp_id = parsed['google_api_name'];
     globals.parsedata = parsedJSON;
     print(parsedJSON);
 
@@ -143,11 +147,12 @@ class MyAppstate extends State<MainMenu> {
 
     //request.files.add(picture);
     request.files.add(picture);
+    request.fields['client_id'] = globals.temp_id ;
     http.StreamedResponse ttr = await request.send();
     http.Response response = await http.Response.fromStream(ttr);
     final parsed = json.decode(response.body);
     final parsedJSON = (jsonDecode(parsed['image_array']));
-    globals.temp_id = parsed['google_api_name'];
+    //globals.temp_id = parsed['google_api_name'];
     globals.parsedata = parsedJSON;
     final bytes = await selected_image.readAsBytes();
     final image = await decodeImageFromList(bytes);
@@ -159,10 +164,34 @@ class MyAppstate extends State<MainMenu> {
 
     Navigator.pushNamed(context, '/draw_image');
   }
+  get_client_id () async{
+    // get client id from data
+    var prefs =await   SharedPreferences.getInstance();
+    globals.temp_id  = prefs.getString('client_id')??"0" ;
+    print("===============");
+    print(globals.temp_id );
+    
+    // request client id if it is the first time to use the program and save it in data
+    if (globals.temp_id== null){
+      print("hiiiiiii");
+          http.Response response=await http.post(
+          Uri.parse("${globals.domain}/api/new_client"),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },);
+          globals.temp_id=json.decode(response.body).toString();
+          print(globals.temp_id);
+      prefs.setString('client_id', globals.temp_id);  
+    }
+    
+  }
 
   @override
   Widget build(BuildContext context) {
     final Size size= MediaQuery.of(context).size;
+
+    get_client_id();
+
 
     return MaterialApp(
       theme: ThemeData.dark(),

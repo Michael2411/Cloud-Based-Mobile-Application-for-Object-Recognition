@@ -2,6 +2,7 @@ from distutils.log import debug
 from sys import stdout
 # from makeup_artist import Makeup_artist
 import logging
+from xmlrpc import client
 from flask import Flask, render_template, request ,flash ,redirect,send_file,jsonify
 from flask_socketio import SocketIO, emit
 # from camera import Camera
@@ -30,6 +31,8 @@ app.logger.addHandler(logging.StreamHandler(stdout))
 app.config['SECRET_KEY'] = 'njkbhjvbgkcvgfchgcfcxfff5drtd56e567878ggf6767t6'
 app.config['DEBUG'] = True
 socketio = SocketIO(app, cors_allowed_origins="*" )
+parent_dir = os.getcwd()
+
 
 #####################################################################
 #loading the model for one time
@@ -78,32 +81,55 @@ def upload_file_api():
     if 'file' not in request.files:
         return jsonify({"error":'No file part'})
     file = request.files['file']
+    client_id=request.form.get('client_id')
+    print(client_id)
     # If the user does not select a file, the browser submits an
     # empty file without a filename.
     if file.filename == '':
         return jsonify({"error":'No selected file'})
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        image_name=UPLOAD_FOLDER+'\\'+os.path.join(filename)
+        image_name=UPLOAD_FOLDER+'\\'+client_id+'\\'+os.path.join(filename)
         file.save(image_name)
         recieved_image=Image.open(image_name)
         model_out=detect_img_w_array(recieved_image)
         out_image=model_out[0]
         out_image = cv2.cvtColor(out_image, cv2.COLOR_BGR2RGB)
-        cv2.imwrite(f"out_img\\{os.path.join(filename)}", out_image)
+        cv2.imwrite(f"out_img\\{client_id}\\{os.path.join(filename)}", out_image)
         domain='http://0694-197-120-79-34.ngrok.io'
         url_out=f"{domain}/image/{os.path.join(filename)}"
         #cv2.destroyAllWindows()
         #for google search api
-        name = str(random.randint(0,1000000))
-        x = threading.Thread(target=cut_image_api, args=(recieved_image,json.loads(model_out[1]),name))
+        x = threading.Thread(target=cut_image_api, args=(recieved_image,json.loads(model_out[1]),client_id))
         x.start()
         json_return={
             'image_array':model_out[1],
             'image_out':url_out,
-            'google_api_name':name
+            'google_api_name':client_id
         }
         return jsonify(json_return)
+
+
+@app.route('/api/new_client', methods=[ 'POST'])
+def get_new_client():
+    name = str(random.randint(0,1000000))
+    # initialize a folder for client data
+    directory = f'uploads\\{name}'
+    directory1 = f'out_img\\{name}'
+    path = os.path.join(parent_dir, directory) 
+    path1 = os.path.join(parent_dir, directory1) 
+    # to check the client is not exists with the same id
+    while os.path.isdir(path):
+        name = str(random.randint(0,1000000))
+        # initialize a folder for client data
+        directory = name
+        path = os.path.join(parent_dir, directory) 
+    os.makedirs(path) 
+    os.makedirs(path1) 
+
+    # send client id
+    return name
+
 
 
 @app.route('/photo', methods=['GET', 'POST'])

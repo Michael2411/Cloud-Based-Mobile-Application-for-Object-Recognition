@@ -6,6 +6,7 @@ import 'image_paint_page.dart';
 import 'positioned_tap_detector_2.dart';
 import 'Search_by_long_press.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:math';
 
 void main() {
   runApp(MyApp());
@@ -97,8 +98,10 @@ class _ImageAndSoundState extends State<ImageAndSound> {
     int index = get_near_object(globals.parsedata, x, y);
 
     print(globals.parsedata[index]["name"]);
+    Random random = new Random();
+    int randomNumber = random.nextInt(10000); 
     String url =
-        "https://www.google.com/searchbyimage?site=search&sa=X&image_url=${globals.domain}/image_search/${globals.temp_id}${index}.jpg";
+        "https://www.google.com/searchbyimage?site=search&sa=X&image_url=${globals.domain}/image_search/${globals.temp_id}${index}.jpg&rand=${randomNumber}";
     print(url);
     launchURL(url);
   }

@@ -51,6 +51,7 @@ dependencies:
   super_tooltip: ^1.0.1
   render_metrics: ^2.0.2
   flutter_image_compress: ^1.1.0
+  shared_preferences: ^2.0.14
 
 
 dev_dependencies:
