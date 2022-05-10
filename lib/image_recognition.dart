@@ -172,7 +172,7 @@ class MyAppstate extends State<MainMenu> {
     print(globals.temp_id );
     
     // request client id if it is the first time to use the program and save it in data
-    if (globals.temp_id== null){
+    if (globals.temp_id== "0"){
       print("hiiiiiii");
           http.Response response=await http.post(
           Uri.parse("${globals.domain}/api/new_client"),
