@@ -168,13 +168,13 @@ def upload_file():
 def test_message(input):
     #get image data as base64 (string)
     input = input.split(",")[1]
-    #write in memory for fast accessing
+    """    #write in memory for fast accessing
     f = io.BytesIO()
     f.write(base64.b64decode(input))
-    f.seek(0)
+    f.seek(0)"""
     #detecting function
-    img = detect_img(imread(f))
-    f.close()
+    img = detect_img(imread(input))
+    ###f.close()
     #convert image color
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     #decode to base64 and sending back to client throught socket
@@ -209,7 +209,7 @@ def test_message_2(input):
     f.write(base64.b64decode(input))
     print("hiiiiiii")
     f.seek(0)
-    model_out=detect_img_w_array(imread(f))
+    model_out=detect_img_w_array(cv2.rotate(imread(f), cv2.cv2.ROTATE_90_CLOCKWISE))
     f.close()
     # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     emit('out-image-event-array',model_out[1], namespace='/test')
