@@ -99,7 +99,7 @@ class _ImageAndSoundState extends State<ImageAndSound> {
 
     print(globals.parsedata[index]["name"]);
     Random random = new Random();
-    int randomNumber = random.nextInt(10000); 
+    int randomNumber = random.nextInt(10000);
     String url =
         "https://www.google.com/searchbyimage?site=search&sa=X&image_url=${globals.domain}/image_search/${globals.temp_id}${index}.jpg?rand=${randomNumber}";
     print(url);
@@ -114,10 +114,10 @@ class _ImageAndSoundState extends State<ImageAndSound> {
     double temp;
     int index = 0;
     for (int i = 0; i < objects.length; i++) {
-      temp = ((x - ((objects[i]["xmin"] + objects[i]["xmax"])) / 2) *
-              (x - ((objects[i]["xmin"] + objects[i]["xmax"])) / 2)) +
-          ((y - ((objects[i]["ymin"] + objects[i]["ymax"])) / 2) *
-              (y - ((objects[i]["ymin"] + objects[i]["ymax"])) / 2));
+      temp = ((x - ((objects[i]["xmin"] + objects[i]["xmax"]) / 2)) *
+              (x - ((objects[i]["xmin"] + objects[i]["xmax"]) / 2))) +
+          ((y - ((objects[i]["ymin"] + objects[i]["ymax"]) / 2)) *
+              (y - ((objects[i]["ymin"] + objects[i]["ymax"]) / 2)));
       if (temp < distance) {
         distance = temp;
         index = i;
