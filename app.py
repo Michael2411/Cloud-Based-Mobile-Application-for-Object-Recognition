@@ -18,6 +18,8 @@ from PIL import Image
 import random
 import json
 import threading
+import glob
+
 
 
 #notes
@@ -32,6 +34,7 @@ app.config['SECRET_KEY'] = 'njkbhjvbgkcvgfchgcfcxfff5drtd56e567878ggf6767t6'
 app.config['DEBUG'] = True
 socketio = SocketIO(app, cors_allowed_origins="*" )
 parent_dir = os.getcwd()
+domain_photo_server="https://6667-102-41-119-153.ngrok.io"
 
 
 #####################################################################
@@ -40,12 +43,12 @@ model = Yolo()
 #####################################################################
 #model functions interface
 def detect_img(image_cv2):
-    results = model.detect(image_cv2, orders=[])
+    results = model.detect(image_cv2, orders=['render'])
     image = results.imgs[0]
     return image
 
 def detect_img_w_array(image_cv2):
-    results = model.detect(image_cv2, orders=[])
+    results = model.detect(image_cv2, orders=['render'])
     image = results.imgs[0]
     json_to_client = model.get_json()
 
@@ -244,6 +247,23 @@ def test_connect():
 @socketio.on("try", namespace='/test')
 def test_message(input):
     print(input)
+
+@app.route("/api/get_cloud", methods=['POST'])
+def get_cloud():
+    client_id=request.form.get('client_id')
+    out_urls=[]
+    client_photos=glob.glob(f"out_img/{client_id}/*")
+    print(client_id)
+    print(client_photos)
+    for single_photo in client_photos:
+        image_name=single_photo.split("\\")[1]
+        out_urls.append(f"{domain_photo_server}/image/{client_id}/{image_name}")
+    print(out_urls)
+
+    json_return={
+        'images_url':out_urls,
+    }
+    return jsonify(json_return)
 
 #####################################################################
 #access images that have been saved on cloud

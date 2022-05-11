@@ -278,6 +278,22 @@ class MyAppstate extends State<MainMenu> {
                             ),),
                           child: const Text('Live Stream')),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.all(25),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/get_cloud');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            textStyle:const TextStyle(
+                              color: WHITE,
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),),
+                          child: const Text('open my cloud')),
+                    ),
                   ],
                 ),
               ),

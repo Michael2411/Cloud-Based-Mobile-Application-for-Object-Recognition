@@ -10,5 +10,6 @@ const domain = "https://6667-102-41-119-153.ngrok.io";
 var image_data;
 var width;
 var height;
+var count1=true;
 bool st = false;
 int cnt = 0;

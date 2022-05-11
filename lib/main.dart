@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:graduation_app/customs/background.dart';
 
+import 'get_from_cloud.dart';
 import 'image_recognition.dart';
 import 'package:flutter/material.dart';
 import 'image_paint_page.dart';
@@ -34,7 +35,8 @@ class MyApp extends StatelessWidget {
         '/camera':(context)  => MainMenu(),
         '/home':(context) => HomePage(),  
         '/stream':(context)  => CameraApp(),
-        '/draw_image':(context) => ImageAndSound(),       
+        '/draw_image':(context) => ImageAndSound(),  
+        '/get_cloud':(context) => GetCloud(),     
       },
     );
   }
