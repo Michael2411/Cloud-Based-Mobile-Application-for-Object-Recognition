@@ -6,7 +6,7 @@ import 'dart:ui' as ui;
 
 var parsedata;
 var temp_id;
-const domain = "https://6667-102-41-119-153.ngrok.io";
+const domain = "https://6417-45-243-91-237.ngrok.io";
 var image_data;
 var width;
 var height;
