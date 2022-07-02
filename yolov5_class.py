@@ -4,7 +4,18 @@ import time
 import warnings
 warnings.filterwarnings("ignore", message="torch.distributed.reduce_op is deprecated")
 class Yolo():
+    __instance = None
+    @staticmethod
+    def get_instance():
+        if Yolo.__instance == None:
+            Yolo()
+        return Yolo.__instance
+
     def __init__(self, model_name='yolov5m'):
+        if Yolo.__instance != None:
+            raise Exception("Error multiple instances")
+        else:
+            Yolo.__instance = self
         self.model = torch.hub.load('ultralytics/yolov5', model_name)
         self.results = None
 
@@ -50,7 +61,12 @@ class Yolo():
         return self.results
 
     def get_json(self):
-        return self.results.pandas().xyxy[0].to_json(orient="records")
+        df = self.results.pandas().xyxy[0]
+        del df['confidence']
+        del df['class']
+        df = df.apply(lambda x: round(x) if x.name in ['xmin','ymin', 'xmax', 'ymax'] else x)
+        json = df.to_json(orient="records")
+        return json
 
 # model = Yolo()
 
