@@ -49,13 +49,13 @@ class HomePage extends StatelessWidget{
   Widget build(BuildContext context){
     final Size size= MediaQuery.of(context).size;
     return  MaterialApp(
-      theme: ThemeData.dark(),
       home: Scaffold(
+        backgroundColor: themeColor,
         resizeToAvoidBottomInset: false,
-          appBar:AppBar(title: const Text('Graduation Project',style: TextStyle(color:DARK_RED,fontSize: 40,
+         /* appBar:AppBar(title: const Text('Graduation Project',style: TextStyle(color:DARK_RED,fontSize: 40,
                                     fontWeight:FontWeight.bold,fontStyle: FontStyle.italic),),
-            backgroundColor: DARK_BLUE,
-            centerTitle: true,),
+            backgroundColor: themeColor,
+            centerTitle: true,),*/
           body:Stack(
             children:[ BACKGROUND(
               height: size.height,
@@ -65,7 +65,7 @@ class HomePage extends StatelessWidget{
                 child: Padding(
                   padding: EdgeInsets.all(50),
                   child: Column(
-                    children:[ ElevatedButton(onPressed:(){
+                    children:[ /*ElevatedButton(onPressed:(){
                       Navigator.pushNamed(context,'/camera');
                     },
                         style: ElevatedButton.styleFrom(
@@ -78,7 +78,20 @@ class HomePage extends StatelessWidget{
                             borderRadius: BorderRadius.circular(30.0),
                           ),
                         ),
-                        child: const Text('Main Menu')),
+                        child: const Text('Main Menu')),*/
+                      Ink(
+                        height: size.height/2,
+                        width:size.width/2,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: Colors.transparent,
+                            image: const DecorationImage(
+                                image: AssetImage("assets/Logo.png"),
+                                fit: BoxFit.cover)),
+                        child: InkWell(onTap: (){Navigator.pushNamed(context,'/camera');
+                        },)
+                      ),
+                      Image.asset('assets/name.png',height: size.height/5,),
                 ]
                   ),
                 ),

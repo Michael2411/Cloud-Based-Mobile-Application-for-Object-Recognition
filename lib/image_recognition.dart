@@ -194,39 +194,57 @@ class MyAppstate extends State<MainMenu> {
 
 
     return MaterialApp(
-      theme: ThemeData.dark(),
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Image Upload',style: TextStyle(color:DARK_RED,fontSize: 40,
-              fontWeight:FontWeight.bold,fontStyle: FontStyle.italic),),
-          backgroundColor: DARK_BLUE,
+        backgroundColor: themeColor,
+        resizeToAvoidBottomInset: false,
+       /* appBar: AppBar(
+          title: Image.asset('assets/name.png', fit: BoxFit.cover),
+          leading: IconButton(
+                  icon: Image.asset('assets/logo.png',height: 100),
+                  onPressed: () { },),
+          backgroundColor:  themeColor,
           centerTitle: true,
-        ),
+        ),*/
         body: Stack(
           children:[ BACKGROUND(
             height: size.height,
             width: size.width,
         ),Center(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(5),
                 child: Column(
                   children: [
-                    ClipRRect(
+                    Image.asset('assets/Logo.png',height: size.height/2.5,width: size.width,),
+                    Image.asset('assets/name.png',height: size.height/25,),
+                    /*ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: Image.network(image_url, height: 0,
                           loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) {
                           return child;
                         } else {
-                          return Center(
+                          return const Center(
                             child: CircularProgressIndicator(),
                           );
                         }
                       }),
-                    ),
+                    ),*/
                     Padding(
-                      padding: const EdgeInsets.all(25),
-                      child: ElevatedButton(
+                      padding: const EdgeInsets.all(5),
+                      child:Ink(
+                          height: 0.1*size.height,
+                          width : 0.55*size.width,
+                          decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage("assets/gallery.png",),
+                                  fit: BoxFit.contain
+                              )),
+                          child: InkWell(onTap: (){uploadImage(
+                            'image',
+                          );
+                          },)
+                      ),
+                      /*child: ElevatedButton(
                         onPressed: () {
                           uploadImage(
                             'image',
@@ -241,11 +259,23 @@ class MyAppstate extends State<MainMenu> {
                             borderRadius: BorderRadius.circular(30.0),
                           ),),
                         child: Text('Upload'),
-                      ),
+                      ),*/
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(25),
-                      child: ElevatedButton(
+                      padding: const EdgeInsets.all(5),
+                      child:Ink(
+                          height: 0.1*size.height,
+                          width : 0.55*size.width,
+                          decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage("assets/camera.png"),
+                                  fit: BoxFit.contain)),
+                          child: InkWell(onTap: (){uploadImage_camera(
+                            'image',
+                          );
+                          },)
+                      ),
+                      /* ElevatedButton(
                         onPressed: () {
                           uploadImage_camera(
                             'image',
@@ -260,11 +290,22 @@ class MyAppstate extends State<MainMenu> {
                             borderRadius: BorderRadius.circular(30.0),
                           ),),
                         child: Text('from camera'),
-                      ),
+                      ),*/
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(25),
-                      child: ElevatedButton(
+                      padding: const EdgeInsets.all(5),
+                      child: Ink(
+                          height: 0.1*size.height,
+                          width : 0.55*size.width,
+                          decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage("assets/stream.png"),
+                                  fit: BoxFit.contain)),
+                          child: InkWell(onTap: (){Navigator.pushNamed(context, '/stream');
+
+                          },)
+                      ),
+                      /*ElevatedButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/stream');
                           },
@@ -276,11 +317,22 @@ class MyAppstate extends State<MainMenu> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),
                             ),),
-                          child: const Text('Live Stream')),
+                          child: const Text('Live Stream')),*/
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(25),
-                      child: ElevatedButton(
+                      padding: const EdgeInsets.all(5),
+                      child:  Ink(
+                          height: 0.1*size.height,
+                          width : 0.55*size.width,
+                          decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage("assets/cloud.png"),
+                                  fit: BoxFit.contain)),
+                          child: InkWell(onTap: (){Navigator.pushNamed(context, '/get_cloud');
+
+                          },)
+                      ),
+                      /*ElevatedButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/get_cloud');
                           },
@@ -292,7 +344,7 @@ class MyAppstate extends State<MainMenu> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),
                             ),),
-                          child: const Text('open my cloud')),
+                          child: const Text('open my cloud')),*/
                     ),
                   ],
                 ),

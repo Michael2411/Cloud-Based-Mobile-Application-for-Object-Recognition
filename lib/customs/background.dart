@@ -15,12 +15,6 @@ class BACKGROUND extends StatelessWidget {
     return Container(
         width: width,
         height: height,
-        decoration: const BoxDecoration(
-          image:DecorationImage(
-                image: AssetImage("assets/college.jpg"),
-                fit:BoxFit.cover,
-        ),
-        ),
-       );
+    );
   }
 }
