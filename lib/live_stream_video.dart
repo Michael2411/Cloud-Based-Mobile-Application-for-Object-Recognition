@@ -20,7 +20,7 @@ class MyHttpOverrides extends HttpOverrides {
           (X509Certificate cert, String host, int port) => true;
   }
 }
-
+//Objects labeling class
 class RectanglePainter1 extends CustomPainter {
   var parsedata;
   @override
@@ -73,6 +73,7 @@ class RectanglePainter1 extends CustomPainter {
 Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+  //Get device avialable cameras
   cameras = await availableCameras();
   runApp(CameraApp());
 }
@@ -91,13 +92,11 @@ class _CameraAppState extends State<CameraApp> {
 
     runApp(CameraApp());
   }
-
-  late CameraImage cameraImage;
   late CameraController controller;
   var image = null;
   bool start = false;
   late List<Plane> image_send;
-  late int test = 70;
+
 
   get jpeg => null;
   var image_show_1;
@@ -110,14 +109,15 @@ class _CameraAppState extends State<CameraApp> {
   }
 
   loadCamera() {
+    //Get controller to the back camera with low resolution to be sent to the server
     controller = CameraController(cameras[0], ResolutionPreset.low,
         imageFormatGroup: ImageFormatGroup.jpeg);
 
     controller.initialize().then((_) {
+      //Establish socket connection
       IO.Socket socket = IO.io('${globals.domain}/test',
           OptionBuilder().setTransports(['websocket']).build());
       socket.onConnect((_) {
-        print('connect!!!!!!!!!!!!!!!!!!!!!!!');
       });
 
       if (!mounted) {
@@ -125,15 +125,15 @@ class _CameraAppState extends State<CameraApp> {
       } else {
         setState(() {
           int counter = 0;
-
           controller.startImageStream((image) {
-            cameraImage = image;
             counter = counter + 1;
+            //Adjusting frame rate
             if (counter % 20 == 0) {
               globals.width = image.width;
               globals.height = image.height;
-              var imaaaage = base64Encode(image.planes[0].bytes);
-              socket.emit('input image array', imaaaage);
+              var sent_image = base64Encode(image.planes[0].bytes);
+              //Send frame to the server
+              socket.emit('input image array',sent_image);
               setState(() {
                 globals.parsedata = [];
               });
@@ -141,11 +141,11 @@ class _CameraAppState extends State<CameraApp> {
           });
         });
       }
-
+      //Receive the detected objects data
       socket.on('out-image-event-array', (data) {
         final parsed = json.decode(data);
         globals.parsedata = parsed;
-
+      //Draw detected objects labels
         setState(() {
           image_show_1 = RectanglePainter1();
           globals.st = true;
