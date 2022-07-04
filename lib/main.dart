@@ -20,7 +20,9 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-void main() => runApp(MaterialApp(
+void main() {
+  HttpOverrides.global = MyHttpOverrides();
+  runApp(MaterialApp(
   home: Splash(),
   routes:<String, WidgetBuilder>{
   '/camera':(context)  => MainMenu(),
@@ -28,6 +30,7 @@ void main() => runApp(MaterialApp(
   '/draw_image':(context) => ImageAndSound(),
   '/get_cloud':(context) => GetCloud(),
 },));
+}
 
 class Splash extends StatefulWidget{
   const Splash({Key? key}) : super(key:key);
