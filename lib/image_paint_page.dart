@@ -3,9 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
+import 'package:graduation_app/UIassets/constants.dart';
 import 'dart:async';
 import 'globals.dart' as globals;
 
+//Class for the page showing the image received by the server and draw the boxes
 class ImagePaintPage extends StatefulWidget {
   ImagePaintPage({
     Key? key,
@@ -16,18 +18,19 @@ class ImagePaintPage extends StatefulWidget {
   _ImagePaintPageState createState() => _ImagePaintPageState();
 }
 
+//Set the state of the page
 class _ImagePaintPageState extends State<ImagePaintPage> {
   ui.Image? image;
   MediaQueryData? queryData;
 
-  //Need to replace the image with the image captured by camera
   @override
   void initState() {
     super.initState();
 
-    loadImage('assets/image.jpg');
+    loadImage('assets/mainpage.png');
   }
 
+  //Load function that loads an image to initialize the state of the page
   Future loadImage(String path) async {
     final data = await rootBundle.load(path);
     final bytes = data.buffer.asUint8List();
@@ -36,8 +39,10 @@ class _ImagePaintPageState extends State<ImagePaintPage> {
     setState(() => this.image = image);
   }
 
+  //The main widget of the page
   @override
   Widget build(BuildContext context) => Scaffold(
+    backgroundColor: themeColor,
           body: Center(
         child: image == null
             ? CircularProgressIndicator()
@@ -60,6 +65,7 @@ class _ImagePaintPageState extends State<ImagePaintPage> {
       ));
 }
 
+//Class inherted from CustomPainter and responsible for drawing the image 
 class ImagePainter extends CustomPainter {
   final ui.Image image;
 
@@ -76,30 +82,28 @@ class ImagePainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
+//Class inherted from CustomPainter and responsible for objects' rectangles
 class RectanglePainter extends CustomPainter {
-  //parsed data, Function needs to update this variable by the cloud data
-  var parsedata;
-
+  var parsedata; // parsedata is the variable to store the json data received from the sever.
+  // paint rectangles and object names on the image.
   @override
   void paint(Canvas canvas, Size size) {
     parsedata = globals.parsedata;
-    print(globals.parsedata);
-    final _random = Random();
-    const widthRatio =
-        1 /*(size.width*2 Variable for the width of the image sent to cloud*/;
-    const heightRatio =
-        1 /*/(size.height*2 Variable for the height of the image sent to cloud*/;
-    double fontSize = 30;
+    final _random = Random(75); 
+    //The seed in random forces the colors to be in a specific order which prevents color flickering
+    double fontSize = 0.015 * (size.width + size.height);
 
-    //We need to change the magic numbers of the cloud image size
+    //itterate over each object of the json to draw the rectangles on the image
     for (var dict in parsedata) {
-      final a = Offset(dict['xmin'] * widthRatio, dict['ymin'] * heightRatio);
-      final b = Offset(dict['xmax'] * widthRatio, dict['ymax'] * heightRatio);
+      final a = Offset(dict['xmin'], dict['ymin']);
+      final b = Offset(dict['xmax'], dict['ymax']);
       final rect = Rect.fromPoints(a, b);
 
-      Color predectionColor = Color.fromARGB(255, _random.nextInt(256),
-          _random.nextInt(256), _random.nextInt(256));
+      // Create color randomly
+      Color predectionColor = Color.fromARGB(255, _random.nextInt(200),
+          _random.nextInt(200), _random.nextInt(200));
 
+      // Set paint style
       final paint = Paint()
         ..color = predectionColor
         ..strokeWidth = 0.003 * (size.width + size.height)
@@ -122,8 +126,9 @@ class RectanglePainter extends CustomPainter {
       tp.layout();
       tp.paint(
           canvas,
-          new Offset(dict['xmin'] * widthRatio,
-              dict['ymin'] * heightRatio - fontSize - 5));
+          // ignore: unnecessary_new
+          new Offset(dict['xmin'],
+              dict['ymin'] - fontSize - 5));
     }
   }
 
