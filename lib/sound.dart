@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:graduation_app/UIassets/constants.dart';
 import 'dart:convert';
 import 'globals.dart' as globals;
 import 'image_paint_page.dart';
@@ -7,6 +8,7 @@ import 'positioned_tap_detector_2.dart';
 import 'Search_by_long_press.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math';
+
 
 void main() {
   runApp(MyApp());
@@ -156,29 +158,47 @@ class _ImageAndSoundState extends State<ImageAndSound> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
+    final Size size= MediaQuery.of(context).size;
+
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
+        backgroundColor: themeColor,
         body: PositionedTapDetector2(
           onLongPress: _onLongPress,
           child: (ImagePaintPage()),
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: 
+        Container(
+          height: 0.22*size.height,
+          width: 0.22*size.width,
+          child: FloatingActionButton(
+            elevation: 0,
+            backgroundColor: Color(0x00000000),
             onPressed: () => speak(),
             tooltip: 'Speak the objects inside the image.',
-            child: const Icon(Icons.multitrack_audio)),
+            child:Ink(
+                          decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage("assets/audio_trans.png",),
+                                  fit: BoxFit.contain
+                              )),
+                          child: InkWell(
+                            splashColor: themeColor,
+                            hoverColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onTap: (){
+                            speak();
+                          },)
+                      ))),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.blue,
-          child: Container(
-            height: 50.0,
-          ),
-        ),
-      ),
+         
+     )
     );
   }
 }

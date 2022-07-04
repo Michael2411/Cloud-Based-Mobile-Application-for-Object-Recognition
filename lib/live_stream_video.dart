@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:graduation_app/UIassets/constants.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:socket_io_client/socket_io_client.dart';
 import 'dart:io';
@@ -155,13 +156,11 @@ class _CameraAppState extends State<CameraApp> {
       socket.onDisconnect((_) => print('disconnect'));
     });
   }
-
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('Live Object Detection'),
-        ),
+        backgroundColor: themeColor,
         body: Center(
             child: globals.st
                 ? CustomPaint(

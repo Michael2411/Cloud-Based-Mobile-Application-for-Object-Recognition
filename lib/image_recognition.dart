@@ -196,43 +196,22 @@ class MyAppstate extends State<MainMenu> {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: themeColor,
-        resizeToAvoidBottomInset: false,
-       /* appBar: AppBar(
-          title: Image.asset('assets/name.png', fit: BoxFit.cover),
-          leading: IconButton(
-                  icon: Image.asset('assets/logo.png',height: 100),
-                  onPressed: () { },),
-          backgroundColor:  themeColor,
-          centerTitle: true,
-        ),*/
+        resizeToAvoidBottomInset: true,
         body: Stack(
           children:[ BACKGROUND(
             height: size.height,
             width: size.width,
         ),Center(
               child: Padding(
-                padding: const EdgeInsets.all(5),
+                padding: EdgeInsets.only(top: size.height/12),
                 child: Column(
                   children: [
-                    Image.asset('assets/Logo.png',height: size.height/2.5,width: size.width,),
-                    /*ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(image_url, height: 0,
-                          loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        } else {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      }),
-                    ),*/
+                    Image.asset('assets/Logo.png',height: size.height/3,width: size.width/2,),
                     Padding(
-                      padding: const EdgeInsets.all(5),
+                      padding: EdgeInsets.all(size.height/100),
                       child:Ink(
                           height: 0.1*size.height,
-                          width : 0.36*size.width,
+                          width : 0.6*size.width,
                           decoration: const BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage("assets/gallery.png",),
@@ -248,28 +227,12 @@ class MyAppstate extends State<MainMenu> {
                           );
                           },)
                       ),
-                      /*child: ElevatedButton(
-                        onPressed: () {
-                          uploadImage(
-                            'image',
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          textStyle:const TextStyle(
-                            color: WHITE,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),),
-                        child: Text('Upload'),
-                      ),*/
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(5),
+                      padding: EdgeInsets.all(size.height/100),
                       child:Ink(
                           height: 0.1*size.height,
-                          width : 0.36*size.width,
+                          width : 0.6*size.width,
                           decoration: const BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage("assets/camera.png"),
@@ -283,28 +246,12 @@ class MyAppstate extends State<MainMenu> {
                           );
                           },)
                       ),
-                      /* ElevatedButton(
-                        onPressed: () {
-                          uploadImage_camera(
-                            'image',
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          textStyle:const TextStyle(
-                            color: WHITE,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),),
-                        child: Text('from camera'),
-                      ),*/
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(5),
+                      padding: EdgeInsets.all(size.height/100),
                       child: Ink(
                           height: 0.1*size.height,
-                          width : 0.36*size.width,
+                          width : 0.6*size.width,
                           decoration: const BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage("assets/stream.png"),
@@ -317,25 +264,12 @@ class MyAppstate extends State<MainMenu> {
 
                           },)
                       ),
-                      /*ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/stream');
-                          },
-                          style: ElevatedButton.styleFrom(
-                            textStyle:const TextStyle(
-                              color: WHITE,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),),
-                          child: const Text('Live Stream')),*/
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(5),
+                      padding: EdgeInsets.only(top: size.height/100),
                       child:  Ink(
                           height: 0.1*size.height,
-                          width : 0.36*size.width,
+                          width : 0.6*size.width,
                           decoration: const BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage("assets/cloud.png"),
@@ -348,19 +282,6 @@ class MyAppstate extends State<MainMenu> {
 
                           },)
                       ),
-                      /*ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/get_cloud');
-                          },
-                          style: ElevatedButton.styleFrom(
-                            textStyle:const TextStyle(
-                              color: WHITE,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),),
-                          child: const Text('open my cloud')),*/
                     ),
                   ],
                 ),

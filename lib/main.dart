@@ -46,7 +46,7 @@ class _SplashState extends State<Splash> {
     gotomain();
   }
   gotomain()async{
-    await Future.delayed(const Duration(seconds: 4),(){});
+    await Future.delayed(const Duration(seconds: 2),(){});
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> MainMenu()));
   }
 
@@ -58,13 +58,15 @@ class _SplashState extends State<Splash> {
       home: Scaffold(
           backgroundColor: themeColor,
           body: Center(
+            child: Padding(
+            padding: EdgeInsets.all(size.height/60),
             child: Column(
-              children: [Image.asset('assets/mainpage.png',height: size.height/1.5,width: size.width,),
-              const SpinKitWave(
-                color: WHITE
+              children: [Image.asset('assets/mainpage.png',height: size.height/1.5,width: size.width/1.5,),
+              const SpinKitSpinningLines(
+                color: Color(0xFFFE00EC),
               ),
               ]
-            ),
+            )),
           )
       ),
     );
