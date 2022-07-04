@@ -232,13 +232,18 @@ class MyAppstate extends State<MainMenu> {
                       padding: const EdgeInsets.all(5),
                       child:Ink(
                           height: 0.1*size.height,
-                          width : 0.55*size.width,
+                          width : 0.36*size.width,
                           decoration: const BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage("assets/gallery.png",),
                                   fit: BoxFit.contain
                               )),
-                          child: InkWell(onTap: (){uploadImage(
+                          child: InkWell(
+                            splashColor: themeColor,
+                            hoverColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onTap: (){
+                            uploadImage(
                             'image',
                           );
                           },)
@@ -264,12 +269,16 @@ class MyAppstate extends State<MainMenu> {
                       padding: const EdgeInsets.all(5),
                       child:Ink(
                           height: 0.1*size.height,
-                          width : 0.55*size.width,
+                          width : 0.36*size.width,
                           decoration: const BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage("assets/camera.png"),
                                   fit: BoxFit.contain)),
-                          child: InkWell(onTap: (){uploadImage_camera(
+                          child: InkWell(
+                            splashColor: themeColor,
+                            hoverColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onTap: (){uploadImage_camera(
                             'image',
                           );
                           },)
@@ -295,12 +304,16 @@ class MyAppstate extends State<MainMenu> {
                       padding: const EdgeInsets.all(5),
                       child: Ink(
                           height: 0.1*size.height,
-                          width : 0.55*size.width,
+                          width : 0.36*size.width,
                           decoration: const BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage("assets/stream.png"),
                                   fit: BoxFit.contain)),
-                          child: InkWell(onTap: (){Navigator.pushNamed(context, '/stream');
+                          child: InkWell(
+                            splashColor: themeColor,
+                            hoverColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onTap: (){Navigator.pushNamed(context, '/stream');
 
                           },)
                       ),
@@ -322,12 +335,16 @@ class MyAppstate extends State<MainMenu> {
                       padding: const EdgeInsets.all(5),
                       child:  Ink(
                           height: 0.1*size.height,
-                          width : 0.55*size.width,
+                          width : 0.36*size.width,
                           decoration: const BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage("assets/cloud.png"),
                                   fit: BoxFit.contain)),
-                          child: InkWell(onTap: (){Navigator.pushNamed(context, '/get_cloud');
+                          child: InkWell(
+                            splashColor: themeColor,
+                            hoverColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onTap: (){Navigator.pushNamed(context, '/get_cloud');
 
                           },)
                       ),

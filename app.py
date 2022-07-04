@@ -26,15 +26,24 @@ import glob
 """
 -mobile:
 """
+parent_dir = os.getcwd()
+def check_folder_create(folder_path):
+    if not(os.path.isdir(folder_path)):
+        path = os.path.join(parent_dir, folder_path) 
+        os.makedirs(path) 
+
 UPLOAD_FOLDER = 'uploads'
+check_folder_create(UPLOAD_FOLDER)
+check_folder_create("out_google_search")
+check_folder_create("out_img")
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app = Flask(__name__)
 app.logger.addHandler(logging.StreamHandler(stdout))
 app.config['SECRET_KEY'] = 'njkbhjvbgkcvgfchgcfcxfff5drtd56e567878ggf6767t6'
 app.config['DEBUG'] = True
 socketio = SocketIO(app, cors_allowed_origins="*" )
-parent_dir = os.getcwd()
-domain_photo_server="https://6667-102-41-119-153.ngrok.io"
+domain='https://ea7a-102-44-61-36.ngrok.io'
 
 
 #####################################################################
@@ -42,16 +51,15 @@ domain_photo_server="https://6667-102-41-119-153.ngrok.io"
 model = Yolo()
 #####################################################################
 #model functions interface
-def detect_img(image_cv2):
+def detect_objects_as_image(image_cv2):
     results = model.detect(image_cv2, orders=['render'])
     image = results.imgs[0]
     return image
 
-def detect_img_w_array(image_cv2):
+def detect_objects_as_data(image_cv2):
     results = model.detect(image_cv2, orders=['render'])
     image = results.imgs[0]
     json_to_client = model.get_json()
-
     return [image,json_to_client]
 #####################################################################
 #help functions
@@ -59,8 +67,9 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def cut_image_api(image,array_positions,name):
+def seperate_objects_into_images_api(image,array_positions,name):
     index=0
+    check_folder_create("out_google_search")
     for single_record in array_positions:
         xmin = int(single_record['xmin'])
         ymin = int(single_record['ymin'])
@@ -78,6 +87,8 @@ def index():
     """Video streaming home page."""
     return render_template('index.html')
 
+
+# old version to return the output image url to the client
 @app.route('/api/photo', methods=[ 'POST'])
 def upload_file_api():
     # check if the post request has the file part
@@ -85,25 +96,27 @@ def upload_file_api():
         return jsonify({"error":'No file part'})
     file = request.files['file']
     client_id=request.form.get('client_id')
-    print(client_id)
     # If the user does not select a file, the browser submits an
     # empty file without a filename.
     if file.filename == '':
         return jsonify({"error":'No selected file'})
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
+        # error handling folder and client id 
+        check_folder_create(UPLOAD_FOLDER+'\\'+client_id)
         image_name=UPLOAD_FOLDER+'\\'+client_id+'\\'+os.path.join(filename)
         file.save(image_name)
+
         recieved_image=Image.open(image_name)
-        model_out=detect_img_w_array(recieved_image)
+        model_out=detect_objects_as_data(recieved_image)
         out_image=model_out[0]
         out_image = cv2.cvtColor(out_image, cv2.COLOR_BGR2RGB)
+        # error handling folder and client id 
+        check_folder_create(f"out_img\\{client_id}")
         cv2.imwrite(f"out_img\\{client_id}\\{os.path.join(filename)}", out_image)
-        domain='http://0694-197-120-79-34.ngrok.io'
         url_out=f"{domain}/image/{os.path.join(filename)}"
-        #cv2.destroyAllWindows()
         #for google search api
-        x = threading.Thread(target=cut_image_api, args=(recieved_image,json.loads(model_out[1]),client_id))
+        x = threading.Thread(target=seperate_objects_into_images_api, args=(recieved_image,json.loads(model_out[1]),client_id))
         x.start()
         json_return={
             'image_array':model_out[1],
@@ -129,12 +142,12 @@ def get_new_client():
         path = os.path.join(parent_dir, directory) 
     os.makedirs(path) 
     os.makedirs(path1) 
-
     # send client id
     return name
 
 
 
+# used to website application
 @app.route('/photo', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -152,7 +165,7 @@ def upload_file():
             filename = secure_filename(file.filename)
             image_name=UPLOAD_FOLDER+'\\'+os.path.join(filename)
             file.save(image_name)
-            out_image=detect_img(cv2.imread(image_name))
+            out_image=detect_objects_as_image(cv2.imread(image_name))
             # out_image = cv2.cvtColor(out_image, cv2.COLOR_BGR2RGB)
             cv2.imwrite(f"out_img\\{os.path.join(filename)}", out_image)
             cv2.destroyAllWindows()
@@ -167,17 +180,13 @@ def upload_file():
     </form>
     '''
 
+# for website application
 @socketio.on('input image', namespace='/test')
-def test_message(input):
+def client_server_socket(input):
     #get image data as base64 (string)
     input = input.split(",")[1]
-    """    #write in memory for fast accessing
-    f = io.BytesIO()
-    f.write(base64.b64decode(input))
-    f.seek(0)"""
     #detecting function
-    img = detect_img(imread(input))
-    ###f.close()
+    img = detect_objects_as_image(imread(input))
     #convert image color
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     #decode to base64 and sending back to client throught socket
@@ -188,16 +197,16 @@ def test_message(input):
     emit('out-image-event', {'image_data': image_data}, namespace='/test')
 
 
+
+#old version not best practice
 @socketio.on('input image mobile', namespace='/test')
-def test_message(input):
-    print("============")
+def return_object_as_image(input):
     f = io.BytesIO()
     f.write(base64.b64decode(input))
     f.seek(0)
-    img = detect_img(cv2.rotate(imread(f), cv2.cv2.ROTATE_90_CLOCKWISE))
+    img = detect_objects_as_image(cv2.rotate(imread(f), cv2.cv2.ROTATE_90_CLOCKWISE))
     f.close()
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
     _, buffer = cv2.imencode('.jpg', img)
     jpg_as_text = base64.b64encode(buffer)
     image_data=jpg_as_text.decode('utf-8')
@@ -207,19 +216,17 @@ def test_message(input):
 
 ##########important###############
 @socketio.on('input image array', namespace='/test')
-def test_message_2(input):
+def return_object_as_data(input):
     f = io.BytesIO()
     f.write(base64.b64decode(input))
-    print("hiiiiiii")
     f.seek(0)
-    model_out=detect_img_w_array(cv2.rotate(imread(f), cv2.cv2.ROTATE_90_CLOCKWISE))
+    model_out=detect_objects_as_data(cv2.rotate(imread(f), cv2.cv2.ROTATE_90_CLOCKWISE))
     f.close()
-    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     emit('out-image-event-array',model_out[1], namespace='/test')
 
-##########important###############
+########## receive the image from the client (mobile app) returns json data ###############
 @app.route('/api/array', methods=[ 'POST'])
-def upload_file_api_2():
+def upload_file_api_v2():
     # check if the post request has the file part
     if 'file' not in request.files:
         return jsonify({"error":'No file part'})
@@ -232,9 +239,9 @@ def upload_file_api_2():
         filename = secure_filename(file.filename)
         image_name=UPLOAD_FOLDER+'\\'+os.path.join(filename)
         file.save(image_name)
-        model_out=detect_img_w_array(imread(image_name))
+        model_out=detect_objects_as_data(imread(image_name))
         json_return={
-            'image_array':model_out[1],
+            'image_array': model_out[1],
         }
         return jsonify(json_return)
 
@@ -244,22 +251,14 @@ def upload_file_api_2():
 def test_connect():
     print("client connected")
 
-@socketio.on("try", namespace='/test')
-def test_message(input):
-    print(input)
-
 @app.route("/api/get_cloud", methods=['POST'])
 def get_cloud():
     client_id=request.form.get('client_id')
     out_urls=[]
     client_photos=glob.glob(f"out_img/{client_id}/*")
-    print(client_id)
-    print(client_photos)
     for single_photo in client_photos:
         image_name=single_photo.split("\\")[1]
-        out_urls.append(f"{domain_photo_server}/image/{client_id}/{image_name}")
-    print(out_urls)
-
+        out_urls.append(f"{domain}/image/{client_id}/{image_name}")
     json_return={
         'images_url':out_urls,
     }

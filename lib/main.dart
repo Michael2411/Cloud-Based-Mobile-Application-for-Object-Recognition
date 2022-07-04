@@ -43,7 +43,7 @@ class _SplashState extends State<Splash> {
     gotomain();
   }
   gotomain()async{
-    await Future.delayed(const Duration(seconds: 7),(){});
+    await Future.delayed(const Duration(seconds: 4),(){});
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> MainMenu()));
   }
 
