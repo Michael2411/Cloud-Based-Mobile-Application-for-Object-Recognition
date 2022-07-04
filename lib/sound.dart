@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:graduation_app/UIassets/constants.dart';
 import 'dart:convert';
 import 'globals.dart' as globals;
 import 'image_paint_page.dart';
@@ -211,12 +212,13 @@ class _ImageAndSoundState extends State<ImageAndSound> {
           child: (ImagePaintPage()),
         ),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: const Color(0xFF2B4f8D),
             onPressed: () => speak(),
             tooltip: 'Speak the objects inside the image.',
             child: const Icon(Icons.multitrack_audio)),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(
-          color: Colors.blue,
+          color: themeColor,
           child: Container(
             height: 50.0,
           ),
