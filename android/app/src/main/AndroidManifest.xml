@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     
    <application
-        android:label="graduation_app"
+        android:label="VisualSight"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
