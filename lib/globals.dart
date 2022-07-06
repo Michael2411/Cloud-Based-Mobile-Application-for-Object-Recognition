@@ -1,15 +1,17 @@
 library project.globals;
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:ui' as ui;
 
 var parsedata;
 var temp_id;
-const domain = "https://9602-45-243-101-174.ngrok.io";
+const domain = "https://2173-45-243-101-174.ngrok.io";
 var image_data;
 var width;
 var height;
 var count1 = true;
 bool st = false;
 int cnt = 0;
+late List<CameraDescription> cameras;

@@ -11,7 +11,7 @@ import 'package:image/image.dart' as imoo;
 import 'image_paint_page.dart';
 import 'globals.dart' as globals;
 
-late List<CameraDescription> cameras;
+// late List<CameraDescription> cameras;
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -28,8 +28,8 @@ class RectanglePainter1 extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     //------------------------------------------
     parsedata = globals.parsedata;
-    final widthRatio = 1.5;
-    final heightRatio = 1.5;
+    final widthRatio = 1;
+    final heightRatio = 1;
     double fontSize = 0.05 * size.width;
     for (var dict in parsedata) {
       final a = Offset(dict['xmin'] * widthRatio, dict['ymin'] * heightRatio);
@@ -72,10 +72,7 @@ class RectanglePainter1 extends CustomPainter {
 }
 
 Future<void> main() async {
-  HttpOverrides.global = MyHttpOverrides();
-  WidgetsFlutterBinding.ensureInitialized();
-  //Get device avialable cameras
-  cameras = await availableCameras();
+  globals.cameras = await availableCameras();
   runApp(CameraApp());
 }
 
@@ -88,11 +85,14 @@ class _CameraAppState extends State<CameraApp> {
   Future<void> camera_starter() async {
     HttpOverrides.global = MyHttpOverrides();
     WidgetsFlutterBinding.ensureInitialized();
-
-    cameras = await availableCameras();
-
-    runApp(CameraApp());
+    
+    globals.cameras = await availableCameras();
   }
+
+  void initialize() async {
+    globals.cameras = await availableCameras();
+  }
+
   late CameraController controller;
   var image = null;
   bool start = false;
@@ -104,6 +104,7 @@ class _CameraAppState extends State<CameraApp> {
 
   @override
   void initState() {
+    initialize();
     super.initState();
     camera_starter();
     loadCamera();
@@ -111,7 +112,8 @@ class _CameraAppState extends State<CameraApp> {
 
   loadCamera() {
     //Get controller to the back camera with low resolution to be sent to the server
-    controller = CameraController(cameras[0], ResolutionPreset.low,
+    initialize();
+    controller = CameraController(globals.cameras[0], ResolutionPreset.low,
         imageFormatGroup: ImageFormatGroup.jpeg);
 
     controller.initialize().then((_) {

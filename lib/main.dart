@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:camera/camera.dart';
 import 'package:graduation_app/customs/background.dart';
 
 import 'get_from_cloud.dart';
@@ -20,7 +22,16 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
+Future<int> initialize() async {
+  globals.cameras = await availableCameras();
+  return 1;
+}
+
 void main() {
+  Timer(
+    const Duration(seconds: 2),
+    initialize
+  );
   HttpOverrides.global = MyHttpOverrides();
   runApp(MaterialApp(
   home: Splash(),
