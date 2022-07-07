@@ -43,7 +43,7 @@ app.logger.addHandler(logging.StreamHandler(stdout))
 app.config['SECRET_KEY'] = 'njkbhjvbgkcvgfchgcfcxfff5drtd56e567878ggf6767t6'
 app.config['DEBUG'] = True
 socketio = SocketIO(app, cors_allowed_origins="*" )
-domain='https://9602-45-243-101-174.ngrok.io'
+domain='https://virtualsight.robo2u.com/'
 
 
 #####################################################################

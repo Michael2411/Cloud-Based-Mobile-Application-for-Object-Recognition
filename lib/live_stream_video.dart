@@ -28,8 +28,8 @@ class RectanglePainter1 extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     //------------------------------------------
     parsedata = globals.parsedata;
-    final widthRatio = 1;
-    final heightRatio = 1;
+    final widthRatio = 1.5;
+    final heightRatio = 1.5;
     double fontSize = 0.05 * size.width;
     for (var dict in parsedata) {
       final a = Offset(dict['xmin'] * widthRatio, dict['ymin'] * heightRatio);
