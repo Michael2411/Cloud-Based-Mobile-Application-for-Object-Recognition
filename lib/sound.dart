@@ -189,7 +189,7 @@ class _ImageAndSoundState extends State<ImageAndSound> {
                                   fit: BoxFit.contain
                               )),
                           child: InkWell(
-                            splashColor: themeColor,
+                            splashColor: Colors.transparent,
                             hoverColor: Colors.transparent,
                             highlightColor: Colors.transparent,
                             onTap: (){

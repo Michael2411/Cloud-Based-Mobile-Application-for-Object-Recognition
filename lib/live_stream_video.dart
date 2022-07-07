@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -12,7 +13,6 @@ import 'image_paint_page.dart';
 import 'globals.dart' as globals;
 
 // late List<CameraDescription> cameras;
-
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -28,20 +28,23 @@ class RectanglePainter1 extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     //------------------------------------------
     parsedata = globals.parsedata;
-    final widthRatio = 1.5;
-    final heightRatio = 1.5;
-    double fontSize = 0.05 * size.width;
+    final _random = Random(60); 
+    final widthRatio = size.width/globals.height;
+    final heightRatio = size.height/globals.width;
+    double fontSize = 0.015 * (size.width + size.height);
     for (var dict in parsedata) {
       final a = Offset(dict['xmin'] * widthRatio, dict['ymin'] * heightRatio);
       final b = Offset(dict['xmax'] * widthRatio, dict['ymax'] * heightRatio);
       //drawing rectangle with point a and b
       final rect = Rect.fromPoints(a, b);
-      Color predectionColor = Color.fromARGB(255, 200, 200, 200);
+      Color predectionColor = Color.fromARGB(255, _random.nextInt(200),
+          _random.nextInt(200), _random.nextInt(200));
 
       final paint = Paint()
         ..color = predectionColor
         ..strokeWidth = 0.003 * (size.width + size.height)
         ..style = PaintingStyle.stroke;
+
       canvas.drawRect(rect, paint);
       //------------------------------------------
       //Add name of the predicted object over it's square in the image
@@ -62,7 +65,7 @@ class RectanglePainter1 extends CustomPainter {
       tp.paint(
           canvas,
           new Offset(dict['xmin'] * widthRatio,
-              dict['ymin'] * heightRatio - fontSize - 5));
+              dict['ymin'] * heightRatio - fontSize));
       //------------------------------------------
     }
   }
@@ -122,21 +125,19 @@ class _CameraAppState extends State<CameraApp> {
           OptionBuilder().setTransports(['websocket']).build());
       socket.onConnect((_) {
       });
-
+      var image_sent = false;
       if (!mounted) {
         return;
       } else {
         setState(() {
-          int counter = 0;
           controller.startImageStream((image) {
-            counter = counter + 1;
-            //Adjusting frame rate
-            if (counter % 20 == 0) {
+            if (!image_sent) {
               globals.width = image.width;
               globals.height = image.height;
               var sent_image = base64Encode(image.planes[0].bytes);
               //Send frame to the server
               socket.emit('input image array',sent_image);
+              image_sent = true;
               setState(() {
                 globals.parsedata = [];
               });
@@ -147,6 +148,7 @@ class _CameraAppState extends State<CameraApp> {
       //Receive the detected objects data
       socket.on('out-image-event-array', (data) {
         final parsed = json.decode(data);
+        image_sent = false;
         globals.parsedata = parsed;
       //Draw detected objects labels
         setState(() {
@@ -158,6 +160,7 @@ class _CameraAppState extends State<CameraApp> {
       socket.onDisconnect((_) => print('disconnect'));
     });
   }
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
