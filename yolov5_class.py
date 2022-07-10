@@ -11,13 +11,35 @@ class Yolo():
             Yolo()
         return Yolo.__instance
 
-    def __init__(self, model_name='yolov5m'):
+    def __init__(self, model_name='yolov5x'):
         if Yolo.__instance != None:
             raise Exception("Error multiple instances")
         else:
             Yolo.__instance = self
         self.model = torch.hub.load('ultralytics/yolov5', model_name)
         self.results = None
+    
+    def detect(self, imgs, orders=['render', 'save', 'show']):
+        self.results = self.model(imgs)  # includes NMS
+        # Results
+        for order in orders:
+            if order == 'render':
+                self.results.render()
+            elif order == 'show':
+                self.results.show()
+            elif order == 'save':
+                self.results.save()
+        return self.results
+
+    def get_json(self):
+        df = self.results.pandas().xyxy[0]
+        start = time.time()
+        del df['confidence']
+        del df['class']
+        df = df.apply(lambda x: round(x) if x.name in ['xmin','ymin', 'xmax', 'ymax'] else x)
+        print(time.time()-start)
+        json = df.to_json(orient="records")
+        return json
 
     def get_results(self):
         return self.results
@@ -45,36 +67,3 @@ class Yolo():
         cap.release()
         cv2.destroyAllWindows()
         return True
-    
-    def detect(self, imgs, orders=['render', 'save', 'show']):
-        # self.results = self.model(imgs, size=img_size)
-        self.results = self.model(imgs)  # includes NMS
-        # Results
-        # self.results.render()
-        for order in orders:
-            if order == 'render':
-                self.results.render()
-            elif order == 'show':
-                self.results.show()
-            elif order == 'save':
-                self.results.save()
-        return self.results
-
-    def get_json(self):
-        df = self.results.pandas().xyxy[0]
-        del df['confidence']
-        del df['class']
-        df = df.apply(lambda x: round(x) if x.name in ['xmin','ymin', 'xmax', 'ymax'] else x)
-        json = df.to_json(orient="records")
-        return json
-
-# model = Yolo()
-
-# img2 = cv2.imread('bus.jpg')[..., ::-1]  # OpenCV image (BGR to RGB)
-
-
-# # # Inference
-# start = time.time()
-
-# # model = net.get_model()  # includes NMS
-# results = model.detect(img2)
