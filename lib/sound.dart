@@ -126,11 +126,15 @@ class _ImageAndSoundState extends State<ImageAndSound> {
     int index = get_near_object(globals.parsedata, x, y);
     Random random = new Random();
     int randomNumber = random.nextInt(10000);
-    //Format URL to use Google search API 
-    String url =
+    //Format URL to use Google search API
+    String urlString =
         "https://www.google.com/searchbyimage?site=search&sa=X&image_url=${globals.domain}/image_search/${globals.temp_id}${index}.jpg?rand=${randomNumber}";
 
-    launchURL(url);
+    Uri url;
+    url = Uri.parse(urlString);
+    print("*****************************//////////////////////////////");
+    print(url);
+    _launchInApp(url);
   }
   //Get neareast object to the the touched position
   int get_near_object(var objects, double x, double y) {
@@ -150,14 +154,24 @@ class _ImageAndSoundState extends State<ImageAndSound> {
     return index;
   }
   //Open the URL in a new window inside the application to access Google search API 
-  launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url, forceWebView: true, enableJavaScript: true);
-    } else {
+  // launchURL(String url) async {
+  //   if (await canLaunch(url)) {
+  //     await launch(url, forceWebView: true, enableJavaScript: true);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
+
+  Future<void> _launchInApp(Uri url) async {
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.inAppWebView,
+      webViewConfiguration: const WebViewConfiguration(
+          headers: <String, String>{'my_header_key': 'my_header_value'}),
+    )) {
       throw 'Could not launch $url';
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
