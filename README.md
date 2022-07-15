@@ -53,3 +53,12 @@ To prepare to run and test your Flutter app on the Android emulator, follow thes
 5. Under Emulated Performance, select Hardware - GLES 2.0 to enable hardware acceleration.
 6. Verify the AVD configuration is correct, and select Finish.
 7. In Android Virtual Device Manager, click Run in the toolbar. The emulator starts up and displays the default canvas for your selected OS version and device.
+
+#### 3.3 Set up tunneling
+1. Open Command Prompt as Administrator.
+2. Run the following command:
+cloudflared.exe service install <token>
+3. the server will run on :
+https://virtualsight.robo2u.com
+4. after finishing Run the following command:
+cloudflared service uninstall
